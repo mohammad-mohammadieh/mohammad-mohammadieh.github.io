@@ -1,0 +1,25 @@
+---
+// A numbered section. On wide screens the number and title sit in the left
+// margin column and stay in view while the section scrolls.
+interface Props {
+  id: string;
+  number: string;
+  title: string;
+}
+
+const { id, number, title } = Astro.props;
+---
+
+<section class="section" id={id} aria-labelledby={`${id}-title`}>
+  <div class="wrap section__grid">
+    <div class="section__head">
+      <h2 class="section__title" id={`${id}-title`}>
+        <span class="section__num">{number}</span>
+        <span class="section__name">{title}</span>
+      </h2>
+    </div>
+    <div class="section__body">
+      <slot />
+    </div>
+  </div>
+</section>

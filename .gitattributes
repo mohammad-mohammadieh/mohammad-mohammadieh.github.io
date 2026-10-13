@@ -1,0 +1,9 @@
+# Text files are stored with LF line endings, whatever the computer.
+* text=auto eol=lf
+
+# Media and fonts are never treated as text.
+*.webp binary
+*.png binary
+*.jpg binary
+*.mp4 binary
+*.woff2 binary

@@ -1,0 +1,74 @@
+/* Design tokens for the "Report" design.
+   Light first. Dark values follow the visitor's system setting.
+   scripts/check.mjs reads the six colors below and fails the build if ink,
+   muted or accent drop under 4.5:1 on --bg or --surface in either theme. */
+
+:root {
+  color-scheme: light dark;
+
+  --bg: #f4f5f7;
+  --surface: #fcfcfd;
+  --ink: #15171c;
+  --muted: #555b66;
+  --line: #d5d8de;
+  --accent: #b93a0b;
+
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* Spacing scale: 4, 8, 12, 16, 24, 32, 48, 72, 96 */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 72px;
+  --s9: 96px;
+
+  /* Layout */
+  --wrap: 1120px;
+  --margin-col: 200px;
+  --gutter: 48px;
+  --pad: 16px;
+  /* About 68 characters of body text. Fixed, so mono and sans blocks share one edge. */
+  --measure: 43rem;
+  --section-top: 20px;
+  --section-bottom: 44px;
+
+  /* Shape and motion: one radius, hairlines, no shadows, short transitions */
+  --radius: 4px;
+  --fast: 140ms;
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Type sizes that change with the viewport */
+  --text-meta: 0.8125rem;
+  --text-figure: 1.625rem;
+}
+
+@media (min-width: 400px) {
+  :root {
+    --pad: 24px;
+  }
+}
+
+@media (min-width: 640px) {
+  :root {
+    --section-top: 24px;
+    --section-bottom: 72px;
+    --text-figure: 2rem;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111317;
+    --surface: #191c22;
+    --ink: #eceef2;
+    --muted: #a3a9b5;
+    --line: #2a2e37;
+    --accent: #ff8a57;
+  }
+}

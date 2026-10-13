@@ -1,0 +1,197 @@
+---
+import { Image } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import Section from "../components/Section.astro";
+import FiguresRow from "../components/FiguresRow.astro";
+import ProjectEntry from "../components/ProjectEntry.astro";
+import Icon from "../components/Icon.astro";
+import { site, mailto } from "../data/site";
+import { getProjects, projectHref, projectNumber } from "../lib/projects";
+
+const projects = await getProjects();
+const bySlug = new Map(projects.map((p) => [p.id, p]));
+const [lead, ...rest] = projects;
+
+// Search engines get the same facts the page shows. No employer, no clients.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  jobTitle: site.role,
+  url: new URL("/", Astro.site).href,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: site.city,
+    addressCountry: site.country,
+  },
+  sameAs: [site.linkedin.url, ...(site.github ? [site.github.url] : [])],
+  alumniOf: { "@type": "CollegeOrUniversity", name: site.education.school },
+};
+
+const heroCover = lead?.data.cover;
+const heroWidths = heroCover ? [640, 960, 1280, 1920].filter((w) => w <= heroCover.src.width) : [];
+// Once any project has a hero image, the others hold the same space with an empty frame.
+const anyCover = projects.some((p) => p.data.cover);
+---
+
+<Base title={site.seo.title} description={site.seo.description} jsonLd={jsonLd} home>
+  <section class="intro" aria-label="Introduction">
+    <div class="wrap section__grid">
+      <div class="intro__body">
+        <p class="intro__statement">{site.intro.statement}</p>
+        {site.intro.paragraphs.map((text) => <p class="intro__text">{text}</p>)}
+        <div class="intro__actions">
+          <a class="button" href="#projects">See the projects</a>
+          <a class="link" href={mailto}>Email</a>
+        </div>
+        {
+          heroCover && (
+            <figure class="figure intro__figure">
+              <a class="figure__frame" href={projectHref(lead)}>
+                <Image
+                  src={heroCover.src}
+                  alt={heroCover.alt}
+                  format="webp"
+                  quality={84}
+                  width={heroWidths.at(-1) ?? heroCover.src.width}
+                  widths={heroWidths.length ? heroWidths : [heroCover.src.width]}
+                  sizes="(min-width: 1000px) 872px, calc(100vw - 48px)"
+                  loading="eager"
+                  fetchpriority="high"
+                />
+              </a>
+              <figcaption class="figure__caption">
+                <span class="figure__num">Fig. 1</span>
+                <strong class="figure__title">{lead.data.title}.</strong>
+                {heroCover.title ? `${heroCover.title}. ` : ""}Demo copy, synthetic data.{" "}
+                <a class="link" href={projectHref(lead)}>Read the case study</a>
+              </figcaption>
+            </figure>
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="band-label">
+    <div class="wrap section__grid">
+      <p class="band__label" id="band-label">{site.figures.label}</p>
+      <FiguresRow items={site.figures.items} label={site.figures.label} />
+    </div>
+  </section>
+
+  <Section id="work" number="1" title="Work">
+    <div class="jobs">
+      {
+        site.work.map((job) => (
+          <article class="job">
+            <header class="job__head">
+              <h3 class="job__org">{job.employer}</h3>
+              <p class="job__role">{job.role}</p>
+              <p class="job__meta">
+                <span>{job.location}</span>
+                <span>{job.dates}</span>
+              </p>
+            </header>
+            <ul class="job__bullets">
+              {job.bullets.map((bullet) => {
+                const related = (bullet.related ?? [])
+                  .map((slug) => bySlug.get(slug))
+                  .filter((p) => p !== undefined);
+                return (
+                  <li>
+                    {bullet.text}
+                    {related.length > 0 && (
+                      <p class="related">
+                        <span class="related__label">
+                          {related.length > 1 ? "Related case studies" : "Related case study"}
+                        </span>
+                        <span class="related__links">
+                          {related.map((p) => (
+                            <a href={projectHref(p)}>{p.data.title}</a>
+                          ))}
+                        </span>
+                      </p>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section id="projects" number="2" title="Projects">
+    <p class="lede">{site.projectsIntro}</p>
+    <div class="entries">
+      {lead && <ProjectEntry project={lead} number={projectNumber(0)} feature reserveThumb={anyCover} />}
+      {
+        rest.length > 0 && (
+          <div class="entries__grid">
+            {rest.map((project, i) => (
+              <ProjectEntry project={project} number={projectNumber(i + 1)} reserveThumb={anyCover} />
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </Section>
+
+  <Section id="skills" number="3" title="Skills">
+    <dl class="skills">
+      {
+        site.skills.map((skill) => (
+          <div class="skills__row">
+            <dt>{skill.group}</dt>
+            <dd>{skill.items}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </Section>
+
+  <Section id="education" number="4" title="Education">
+    <article class="job">
+      <header class="job__head">
+        <h3 class="job__org">{site.education.school}</h3>
+        <p class="job__role">{site.education.degree}</p>
+        <p class="job__meta">
+          <span>{site.education.location}</span>
+          <span>{site.education.dates}</span>
+        </p>
+      </header>
+    </article>
+  </Section>
+
+  <Section id="contact" number="5" title="Contact">
+    <p class="lede">{site.contactLede}</p>
+    <dl class="contact">
+      <div class="contact__row">
+        <dt>Email</dt>
+        <dd><a class="link" href={mailto}>{site.email}</a></dd>
+      </div>
+      <div class="contact__row">
+        <dt>LinkedIn</dt>
+        <dd>
+          <a class="link" href={site.linkedin.url} rel="me noopener">
+            {site.linkedin.label}<Icon name="arrow-up-right" />
+          </a>
+        </dd>
+      </div>
+      {
+        site.github && (
+          <div class="contact__row">
+            <dt>GitHub</dt>
+            <dd>
+              <a class="link" href={site.github.url} rel="me noopener">
+                {site.github.label}<Icon name="arrow-up-right" />
+              </a>
+            </dd>
+          </div>
+        )
+      }
+    </dl>
+  </Section>
+</Base>

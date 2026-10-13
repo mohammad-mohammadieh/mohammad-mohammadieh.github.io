@@ -1,0 +1,23 @@
+{
+  "name": "mohammadieh-portfolio",
+  "description": "Personal portfolio of Mohammad Mohammadieh. Static site built with Astro.",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "node scripts/astro.mjs dev --host 127.0.0.1",
+    "build": "node scripts/check.mjs --source --repo && node scripts/astro.mjs build && node scripts/check.mjs --dist",
+    "check": "npm run build",
+    "scan": "node scripts/check.mjs --repo",
+    "preview": "node scripts/astro.mjs preview --host 127.0.0.1",
+    "images": "node scripts/make-images.mjs",
+    "media": "node scripts/prepare-media.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.3.8"
+  }
+}

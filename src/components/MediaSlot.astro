@@ -1,0 +1,18 @@
+---
+// A neutral, clearly empty frame that holds the place of a screenshot or a
+// video until the real one exists. It is never a drawing of a dashboard.
+import Icon from "./Icon.astro";
+
+interface Props {
+  kind: "screen" | "video";
+  /** Text under the icon. Defaults to "Screen" or "Video". */
+  label?: string;
+}
+
+const { kind, label } = Astro.props;
+---
+
+<div class:list={["slot", `slot--${kind}`]}>
+  <Icon name={kind === "video" ? "play" : "image"} class="slot__icon" />
+  <span class="slot__label">{label ?? (kind === "video" ? "Video" : "Screen")}</span>
+</div>

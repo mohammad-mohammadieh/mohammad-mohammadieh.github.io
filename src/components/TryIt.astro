@@ -1,0 +1,52 @@
+---
+// Optional links for a project: a public demo, files to download, a repository.
+// The project page shows this section only when at least one of them exists.
+import Icon from "./Icon.astro";
+import type { Project } from "../lib/projects";
+
+interface Props {
+  project: Project;
+}
+
+const { demo, downloads, repoUrl } = Astro.props.project.data;
+---
+
+<div class="tryit">
+  {
+    demo && (
+      <div class="tryit__demo">
+        <a class="button" href={demo.url} rel="noopener">
+          {demo.label}
+          <Icon name="arrow-up-right" />
+        </a>
+        <p class="tryit__note">{demo.note ?? "The demo runs on synthetic data."}</p>
+      </div>
+    )
+  }
+  {
+    downloads.length > 0 && (
+      <ul class="tryit__list">
+        {downloads.map((file) => (
+          <li>
+            <a class="link" href={file.url} rel="noopener">
+              <Icon name="download" />
+              {file.label}
+            </a>
+            {file.size && <span class="tryit__size">{file.size}</span>}
+            {file.note && <span class="tryit__filenote">{file.note}</span>}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  {
+    repoUrl && (
+      <p>
+        <a class="link" href={repoUrl} rel="noopener">
+          Source on GitHub
+          <Icon name="arrow-up-right" />
+        </a>
+      </p>
+    )
+  }
+</div>

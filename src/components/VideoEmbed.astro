@@ -1,0 +1,104 @@
+---
+// One video with a numbered caption.
+// file:    a native player for a file under public/. It shows a poster frame
+//          and downloads nothing until the visitor presses play.
+// youtube: a poster with a play button. The player loads only after the click,
+//          from the no-cookie domain. Without JavaScript the link opens the video.
+import { Image, getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import Icon from "./Icon.astro";
+
+interface Props {
+  video: {
+    provider: "file" | "youtube";
+    src?: string;
+    id?: string;
+    label?: string;
+    title: string;
+    description: string;
+    duration?: string;
+    poster: ImageMetadata;
+    captions?: string;
+  };
+  number: number;
+}
+
+const { video, number } = Astro.props;
+const embedUrl = `https://www.youtube-nocookie.com/embed/${video.id}`;
+const poster = await getImage({
+  src: video.poster,
+  format: "webp",
+  quality: 82,
+  width: Math.min(video.poster.width, 1280),
+});
+---
+
+<figure class="figure figure--video">
+  {
+    video.provider === "youtube" ? (
+      <a
+        class="figure__frame video"
+        href={embedUrl}
+        data-video-embed={`${embedUrl}?autoplay=1&rel=0`}
+        data-video-title={video.title}
+      >
+        <Image
+          src={video.poster}
+          alt=""
+          format="webp"
+          widths={[640, 960, 1280].filter((w) => w <= video.poster.width)}
+          sizes="(min-width: 1000px) 872px, calc(100vw - 48px)"
+          loading="lazy"
+        />
+        <span class="video__play">
+          <Icon name="play" />
+          <span>Play video</span>
+        </span>
+        <span class="visually-hidden">: {video.title}</span>
+      </a>
+    ) : (
+      <div class="figure__frame video">
+        <video
+          controls
+          preload="none"
+          playsinline
+          poster={poster.src}
+          width="1920"
+          height="1080"
+          aria-label={video.title}
+        >
+          <source src={video.src} type="video/mp4" />
+          {video.captions && (
+            <track kind="captions" src={video.captions} srclang="en" label="English" default />
+          )}
+          <a href={video.src}>Open the video file</a>
+        </video>
+      </div>
+    )
+  }
+  <figcaption class="figure__caption">
+    <span class="figure__num">Video {number}</span>
+    <strong class="figure__title">
+      {video.label ?? video.title}{video.duration && ` (${video.duration})`}.
+    </strong>
+    {video.description}
+  </figcaption>
+</figure>
+
+<script>
+  // Swap a YouTube poster for the player on click.
+  for (const link of document.querySelectorAll<HTMLAnchorElement>("a[data-video-embed]")) {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      const frame = document.createElement("iframe");
+      frame.src = link.dataset.videoEmbed!;
+      frame.title = link.dataset.videoTitle ?? "Video";
+      frame.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+      const holder = document.createElement("div");
+      holder.className = "figure__frame video";
+      holder.append(frame);
+      link.replaceWith(holder);
+      frame.focus();
+    });
+  }
+</script>

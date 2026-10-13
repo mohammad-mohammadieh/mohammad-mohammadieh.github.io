@@ -1,0 +1,23 @@
+---
+// Large numbers with plain labels. Values are facts from the resume
+// unless a project marks them as measured on the version shown.
+interface Props {
+  items: readonly { value: string; label: string }[];
+  /** Accessible name for the list. */
+  label: string;
+  size?: "lg" | "sm";
+}
+
+const { items, label, size = "lg" } = Astro.props;
+---
+
+<dl class:list={["figures", `figures--${size}`]} aria-label={label}>
+  {
+    items.map((item) => (
+      <div class="figures__item">
+        <dt class="figures__label">{item.label}</dt>
+        <dd class="figures__value">{item.value}</dd>
+      </div>
+    ))
+  }
+</dl>

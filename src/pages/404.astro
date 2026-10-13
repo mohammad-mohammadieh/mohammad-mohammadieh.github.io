@@ -1,0 +1,25 @@
+---
+import Base from "../layouts/Base.astro";
+import { site } from "../data/site";
+---
+
+<Base
+  title={`Page not found | ${site.name}`}
+  description="This page does not exist. The home page lists my work and projects."
+  noindex
+>
+  <section class="intro notfound" aria-labelledby="notfound-title">
+    <div class="wrap section__grid">
+      <div class="intro__body">
+        <h1 class="case__title" id="notfound-title">Page not found</h1>
+        <p class="intro__text">
+          There is nothing at this address. The page may have moved, or the link may be mistyped.
+        </p>
+        <div class="intro__actions">
+          <a class="button" href="/">Go to the home page</a>
+          <a class="link" href="/#projects">See the projects</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

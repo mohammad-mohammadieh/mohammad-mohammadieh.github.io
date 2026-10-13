@@ -1,0 +1,45 @@
+# Build output, dependencies and tool caches
+node_modules/
+dist/
+.astro/
+.tmp-images/
+.cache/
+*.log
+npm-debug.log*
+
+# Local cache written by a design-check editor plugin
+.impeccable/
+
+# Private working documents. They stay on this computer.
+WEBSITE_PLAN.md
+*.private.md
+notes-private/
+
+# Private list of names and words that must never appear on the site.
+# Never commit it: a public list of client names would itself be a leak.
+.confidential-terms.txt
+*confidential-terms*
+*denylist*
+
+# Source files of the kind the site must never carry
+*.pbix
+*.pbit
+*.xlsx
+*.xls
+*.docx
+*.csv
+
+# Secrets and environment files
+.env
+.env.*
+*.pem
+*.pfx
+*.key
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp

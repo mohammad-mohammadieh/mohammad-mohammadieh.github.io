@@ -1,0 +1,41 @@
+---
+// Previous and next project, in home page order.
+import Icon from "./Icon.astro";
+import { projectHref, type Project } from "../lib/projects";
+
+interface Props {
+  prev?: { project: Project; number: string };
+  next?: { project: Project; number: string };
+}
+
+const { prev, next } = Astro.props;
+---
+
+<nav class="pager" aria-label="Other projects">
+  {
+    prev ? (
+      <a class="pager__cell pager__cell--prev" href={projectHref(prev.project)} rel="prev">
+        <span class="pager__label">
+          <Icon name="arrow-left" />
+          Previous, {prev.number}
+        </span>{" "}
+        <span class="pager__title">{prev.project.data.title}</span>
+      </a>
+    ) : (
+      <span class="pager__cell pager__cell--empty" />
+    )
+  }
+  {
+    next ? (
+      <a class="pager__cell pager__cell--next" href={projectHref(next.project)} rel="next">
+        <span class="pager__label">
+          Next, {next.number}
+          <Icon name="arrow-right" />
+        </span>{" "}
+        <span class="pager__title">{next.project.data.title}</span>
+      </a>
+    ) : (
+      <span class="pager__cell pager__cell--empty" />
+    )
+  }
+</nav>

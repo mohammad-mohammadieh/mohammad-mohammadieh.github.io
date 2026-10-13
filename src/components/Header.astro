@@ -1,0 +1,39 @@
+---
+import { site, mailto } from "../data/site";
+
+interface Props {
+  /** On the home page the name is the page heading. */
+  home?: boolean;
+}
+
+const { home = false } = Astro.props;
+const NameTag = home ? "h1" : "p";
+
+const nav = [
+  { label: "Work", href: "/#work" },
+  { label: "Projects", href: "/#projects" },
+  { label: "Skills", href: "/#skills" },
+  { label: "Contact", href: "/#contact" },
+];
+---
+
+<header class="masthead">
+  <div class="wrap masthead__inner">
+    <div class="masthead__id">
+      <NameTag class="masthead__name"><a href="/">{site.name}</a></NameTag>
+      <p class="masthead__role">{site.role}, {site.location}</p>
+    </div>
+    <nav class="masthead__nav" aria-label="Sections">
+      <ul>
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <a class="masthead__email link" href={mailto}>Email</a>
+  </div>
+</header>

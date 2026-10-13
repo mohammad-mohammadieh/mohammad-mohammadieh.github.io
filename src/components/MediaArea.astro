@@ -1,0 +1,155 @@
+---
+// Section 5 of every project page: the videos, then the screenshot gallery.
+// Whatever exists is shown. Whatever does not exist yet is held by a neutral
+// empty frame, so the page reads as "media coming soon", not as broken.
+import Figure from "./Figure.astro";
+import Icon from "./Icon.astro";
+import MediaSlot from "./MediaSlot.astro";
+import VideoEmbed from "./VideoEmbed.astro";
+import type { Project } from "../lib/projects";
+
+interface Props {
+  project: Project;
+  /** Number of the first gallery figure (the cover, when present, is Fig. 1). */
+  firstFigure: number;
+}
+
+const { project, firstFigure } = Astro.props;
+const { gallery, videos, planned, mediaNote } = project.data;
+const hasGallery = gallery.length > 0;
+const hasVideo = videos.length > 0;
+const plannedText = planned ?? "screenshots and a short video";
+---
+
+<div class="media">
+  {
+    !hasGallery && !hasVideo ? (
+      <>
+        <p class="media__status">
+          <strong>Media coming soon.</strong> Planned for this page: {plannedText}.
+          Everything shown will use synthetic data.
+        </p>
+        <div class="sheet" aria-hidden="true">
+          <MediaSlot kind="video" />
+          <MediaSlot kind="screen" />
+          <MediaSlot kind="screen" />
+          <MediaSlot kind="screen" />
+          <MediaSlot kind="screen" />
+        </div>
+      </>
+    ) : (
+      <>
+        <p class="media__status">
+          {mediaNote ?? "All screens and video below use synthetic data."}
+        </p>
+
+        {hasVideo ? (
+          <div class="videos">
+            {videos.map((video, i) => (
+              <VideoEmbed video={video} number={i + 1} />
+            ))}
+          </div>
+        ) : (
+          <div class="media__pending">
+            <div class="media__pending-slot" aria-hidden="true">
+              <MediaSlot kind="video" />
+            </div>
+            <p class="figure__caption">
+              <span class="figure__num">Video</span> Coming soon.
+            </p>
+          </div>
+        )}
+
+        {hasGallery ? (
+          <div class="gallery">
+            {gallery.map((item, i) => (
+              <Figure
+                src={item.src}
+                alt={item.alt}
+                title={item.title}
+                caption={item.caption}
+                kind={item.kind}
+                number={firstFigure + i}
+              />
+            ))}
+          </div>
+        ) : (
+          <div class="media__pending">
+            <div class="sheet" aria-hidden="true">
+              <MediaSlot kind="screen" />
+              <MediaSlot kind="screen" />
+              <MediaSlot kind="screen" />
+              <MediaSlot kind="screen" />
+            </div>
+            <p class="figure__caption">
+              <span class="figure__num">Screens</span> Coming soon.
+            </p>
+          </div>
+        )}
+      </>
+    )
+  }
+</div>
+
+{
+  (hasGallery || project.data.cover) && (
+    <dialog class="lightbox" aria-label="Full-size image">
+      <form method="dialog" class="lightbox__bar">
+        <p class="lightbox__caption" />
+        <button class="lightbox__zoom" type="button" aria-pressed="false">Actual size</button>
+        <button class="lightbox__close" type="submit">
+          <Icon name="x" />
+          <span>Close</span>
+        </button>
+      </form>
+      <div class="lightbox__scroll" tabindex="0" />
+    </dialog>
+  )
+}
+
+<script>
+  // Opens a figure at full size in a native dialog. Escape closes it and
+  // focus returns to the figure. Without this script the link opens the file.
+  const dialog = document.querySelector<HTMLDialogElement>("dialog.lightbox");
+  const holder = dialog?.querySelector<HTMLElement>(".lightbox__scroll");
+  const label = dialog?.querySelector<HTMLElement>(".lightbox__caption");
+  const zoom = dialog?.querySelector<HTMLButtonElement>(".lightbox__zoom");
+
+  if (dialog && holder && typeof dialog.showModal === "function") {
+    // "Actual size" shows every pixel of the image. A click on the image does the same.
+    const setActual = (on: boolean) => {
+      holder.classList.toggle("is-actual", on);
+      zoom?.setAttribute("aria-pressed", String(on));
+      if (zoom) zoom.textContent = on ? "Fit to screen" : "Actual size";
+    };
+    zoom?.addEventListener("click", () => setActual(!holder.classList.contains("is-actual")));
+    holder.addEventListener("click", (event) => {
+      if (event.target instanceof HTMLImageElement) {
+        setActual(!holder.classList.contains("is-actual"));
+      }
+    });
+
+    for (const link of document.querySelectorAll<HTMLAnchorElement>("a[data-lightbox]")) {
+      link.addEventListener("click", (event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        // The full-size image is created on demand, so nothing loads before the click.
+        const image = new Image(
+          Number(link.dataset.width) || undefined,
+          Number(link.dataset.height) || undefined,
+        );
+        image.className = "lightbox__img";
+        image.alt = link.querySelector("img")?.alt ?? "";
+        image.src = link.href;
+        holder.replaceChildren(image);
+        setActual(false);
+        holder.scrollTo(0, 0);
+        if (label) {
+          label.textContent =
+            link.closest("figure")?.querySelector(".figure__num")?.textContent ?? "";
+        }
+        dialog.showModal();
+      });
+    }
+  }
+</script>

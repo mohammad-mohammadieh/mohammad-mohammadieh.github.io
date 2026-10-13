@@ -1,0 +1,191 @@
+---
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+import Base from "../../layouts/Base.astro";
+import Section from "../../components/Section.astro";
+import FiguresRow from "../../components/FiguresRow.astro";
+import ConfidentialityNote from "../../components/ConfidentialityNote.astro";
+import Figure from "../../components/Figure.astro";
+import MediaArea from "../../components/MediaArea.astro";
+import TryIt from "../../components/TryIt.astro";
+import Pager from "../../components/Pager.astro";
+import Icon from "../../components/Icon.astro";
+import { site, mailto } from "../../data/site";
+import {
+  ROLE_LABEL,
+  STATUS_LABEL,
+  formatDate,
+  getProjects,
+  projectNumber,
+  splitBody,
+  type Project,
+} from "../../lib/projects";
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  const at = (i: number) =>
+    projects[i] ? { project: projects[i], number: projectNumber(i) } : undefined;
+  return projects.map((project, index) => ({
+    params: { slug: project.id },
+    props: { project, number: projectNumber(index), prev: at(index - 1), next: at(index + 1) },
+  }));
+}
+
+interface Neighbor {
+  project: Project;
+  number: string;
+}
+interface Props {
+  project: Project;
+  number: string;
+  prev?: Neighbor;
+  next?: Neighbor;
+}
+
+const { project, number, prev, next } = Astro.props;
+const { data } = project;
+
+// Sections 1 to 4 are the written Markdown body. The rest are generated.
+const written = splitBody(project.rendered?.html ?? "");
+const hasTryIt = Boolean(data.demo || data.repoUrl || data.downloads.length > 0);
+const sections = [
+  ...written,
+  { id: "screens-and-video", title: "Screens and video" },
+  ...(hasTryIt ? [{ id: "try-it", title: "Try it" }] : []),
+];
+const sectionNumber = (id: string) => String(sections.findIndex((s) => s.id === id) + 1);
+
+// Facts about the real project and numbers measured on what is shown never share a row.
+const originalFigures = data.figures.filter((f) => f.scope === "original").slice(0, 4);
+const shownFigures = data.figures.filter((f) => f.scope === "shown").slice(0, 4);
+
+const title = data.seo?.title ?? `${data.title} | ${site.name}`;
+const description = data.seo?.description ?? data.summary;
+// A per-project social image is used when one has been generated (npm run images).
+const ogImage = existsSync(join(process.cwd(), "public", "og", `${project.id}.png`))
+  ? `/og/${project.id}.png`
+  : "/og-home.png";
+---
+
+<Base title={title} description={description} ogImage={ogImage} ogType="article">
+  <article class="case">
+    <header class="case__header">
+      <div class="wrap section__grid">
+        <div class="case__aside">
+          <a class="back" href="/#projects">
+            <Icon name="arrow-left" />
+            All projects
+          </a>
+          <nav class="toc" aria-label="On this page">
+            <p class="toc__label">On this page</p>
+            <ol>
+              {
+                sections.map((s, i) => (
+                  <li>
+                    <a href={`#${s.id}`}>
+                      <span class="toc__num">{i + 1}</span>
+                      {s.title}
+                    </a>
+                  </li>
+                ))
+              }
+            </ol>
+          </nav>
+        </div>
+
+        <div class="case__head">
+          <p class="case__num">Project {number}</p>
+          <h1 class="case__title">{data.title}</h1>
+          <p class="case__summary">{data.summary}</p>
+
+          <dl class="case__meta">
+            <div>
+              <dt>Stack</dt>
+              <dd>{data.stack.join(", ")}</dd>
+            </div>
+            <div>
+              <dt>Role</dt>
+              <dd>{ROLE_LABEL[data.role]}</dd>
+            </div>
+            <div>
+              <dt>Status</dt>
+              <dd>{STATUS_LABEL[data.status]}</dd>
+            </div>
+          </dl>
+
+          {
+            originalFigures.length > 0 && (
+              <div class="case__figures">
+                <p class="case__figures-label">The project in numbers</p>
+                <FiguresRow items={originalFigures} label="The project in numbers" />
+              </div>
+            )
+          }
+          {
+            shownFigures.length > 0 && (
+              <div class="case__figures">
+                <p class="case__figures-label">In the demo copy shown here</p>
+                <FiguresRow items={shownFigures} label="In the demo copy shown here" />
+              </div>
+            )
+          }
+
+          <ConfidentialityNote extra={data.noteExtra} />
+
+          {
+            data.cover && (
+              <Figure
+                src={data.cover.src}
+                alt={data.cover.alt}
+                title={data.cover.title}
+                caption={data.cover.caption ?? `${data.title}. Synthetic data.`}
+                number={1}
+                eager
+              />
+            )
+          }
+        </div>
+      </div>
+    </header>
+
+    {
+      written.map((s) => (
+        <Section id={s.id} number={sectionNumber(s.id)} title={s.title}>
+          <div class="prose" set:html={s.html} />
+        </Section>
+      ))
+    }
+
+    <Section
+      id="screens-and-video"
+      number={sectionNumber("screens-and-video")}
+      title="Screens and video"
+    >
+      <MediaArea project={project} firstFigure={data.cover ? 2 : 1} />
+    </Section>
+
+    {
+      hasTryIt && (
+        <Section id="try-it" number={sectionNumber("try-it")} title="Try it">
+          <TryIt project={project} />
+        </Section>
+      )
+    }
+
+    <footer class="case__footer">
+      <div class="wrap section__grid">
+        <div class="case__footer-body">
+          <Pager prev={prev} next={next} />
+          <p class="case__ask">
+            Questions about this project? <a class="link" href={mailto}>Email</a> me.
+          </p>
+          <p class="case__updated">
+            Last updated <time datetime={data.updated.toISOString().slice(0, 10)}
+              >{formatDate(data.updated)}</time
+            >
+          </p>
+        </div>
+      </div>
+    </footer>
+  </article>
+</Base>

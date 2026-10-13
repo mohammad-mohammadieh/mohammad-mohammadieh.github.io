@@ -1,0 +1,67 @@
+---
+// An image in a hairline frame with a numbered caption below it.
+// The page loads a WebP sized for the screen. The image links to its
+// full-size version: with JavaScript the link opens in a dialog (see
+// MediaArea.astro), without it the image file opens.
+import { Image, getImage } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  caption: string;
+  /** Optional short title, shown in front of the caption. */
+  title?: string;
+  number: number;
+  kind?: "screen" | "detail" | "diagram";
+  /** Load early. Use for the first image on a page only. */
+  eager?: boolean;
+}
+
+const { src, alt, caption, title, number, kind = "screen", eager = false } = Astro.props;
+
+const wanted = kind === "detail" ? [480, 800, 1200] : [640, 960, 1280, 1920];
+const fitting = wanted.filter((w) => w < src.width);
+const widths = [...fitting, ...(src.width <= 1920 ? [src.width] : [])];
+const sizes =
+  kind === "detail"
+    ? "(min-width: 1000px) 424px, (min-width: 720px) 50vw, calc(100vw - 48px)"
+    : "(min-width: 1000px) 872px, calc(100vw - 48px)";
+
+// Full size for the dialog: sharp enough to read every label on a large screen.
+const full = await getImage({
+  src,
+  format: "webp",
+  quality: 90,
+  width: Math.min(src.width, 2880),
+});
+---
+
+<figure class:list={["figure", `figure--${kind}`]} style={`--natural: ${src.width}px`}>
+  <a
+    class="figure__frame"
+    href={full.src}
+    data-lightbox
+    data-width={full.attributes.width}
+    data-height={full.attributes.height}
+  >
+    <Image
+      src={src}
+      alt={alt}
+      format="webp"
+      quality={84}
+      width={Math.min(src.width, 1920)}
+      widths={widths}
+      sizes={sizes}
+      loading={eager ? "eager" : "lazy"}
+      decoding="async"
+      fetchpriority={eager ? "high" : undefined}
+    />
+    <span class="visually-hidden">Open at full size</span>
+  </a>
+  <figcaption class="figure__caption">
+    <span class="figure__num">Fig. {number}</span>
+    {title && <strong class="figure__title">{title}.</strong>}
+    {caption}
+  </figcaption>
+</figure>

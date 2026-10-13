@@ -1,0 +1,22 @@
+---
+import { site, mailto } from "../data/site";
+---
+
+<footer class="footer">
+  <div class="wrap footer__inner">
+    <p class="footer__line">{site.name}. {site.location}. {site.year}.</p>
+    <ul class="footer__links">
+      <li><a class="link" href={mailto}>Email</a></li>
+      <li><a class="link" href={site.linkedin.url} rel="me noopener">LinkedIn</a></li>
+      {
+        site.github && (
+          <li>
+            <a class="link" href={site.github.url} rel="me noopener">
+              GitHub
+            </a>
+          </li>
+        )
+      }
+    </ul>
+  </div>
+</footer>
