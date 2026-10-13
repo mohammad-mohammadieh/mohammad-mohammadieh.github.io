@@ -44,31 +44,6 @@ const anyCover = projects.some((p) => p.data.cover);
           <a class="button" href="#projects">See the projects</a>
           <a class="link" href={mailto}>Email</a>
         </div>
-        {
-          heroCover && (
-            <figure class="figure intro__figure">
-              <a class="figure__frame" href={projectHref(lead)}>
-                <Image
-                  src={heroCover.src}
-                  alt={heroCover.alt}
-                  format="webp"
-                  quality={84}
-                  width={heroWidths.at(-1) ?? heroCover.src.width}
-                  widths={heroWidths.length ? heroWidths : [heroCover.src.width]}
-                  sizes="(min-width: 1000px) 872px, calc(100vw - 48px)"
-                  loading="eager"
-                  fetchpriority="high"
-                />
-              </a>
-              <figcaption class="figure__caption">
-                <span class="figure__num">Fig. 1</span>
-                <strong class="figure__title">{lead.data.title}.</strong>
-                {heroCover.title ? `${heroCover.title}. ` : ""}Demo copy, synthetic data.{" "}
-                <a class="link" href={projectHref(lead)}>Read the case study</a>
-              </figcaption>
-            </figure>
-          )
-        }
       </div>
     </div>
   </section>
