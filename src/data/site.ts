@@ -48,7 +48,7 @@ export const site = {
     statement:
       "I turn business data into clear dashboards and tools people actually use.",
     paragraphs: [
-      "I'm a data analyst in Beirut with three years of experience in Power BI, Microsoft Fabric and the Power Platform. I build reports, data models and business apps for public-sector and enterprise teams.",
+      "I'm a data analyst in Beirut working with Power BI, Microsoft Fabric and Power Platform. I build reports, data models and business apps for public-sector and enterprise teams.",
     ],
   },
 
