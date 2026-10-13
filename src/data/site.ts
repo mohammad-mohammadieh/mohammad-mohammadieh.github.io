@@ -104,23 +104,37 @@ export const site = {
   projectsIntro:
     "The organization and product names in the demos are made up, and all the data is synthetic.",
 
+  // Each group is shown as a row of tags.
   skills: [
     {
       group: "Business Intelligence",
-      items:
-        "Power BI, DAX, Power Query (M), semantic modeling, row-level security, Tableau, Excel",
+      items: [
+        "Power BI",
+        "DAX",
+        "Power Query (M)",
+        "semantic modeling",
+        "row-level security",
+        "Tableau",
+        "Excel",
+      ],
     },
     {
       group: "Data Platforms",
-      items:
-        "Microsoft Fabric (Lakehouse, Direct Lake), SQL (SQL Server, MySQL), KQL, Python",
+      items: ["Microsoft Fabric (Lakehouse, Direct Lake)", "SQL (SQL Server, MySQL)", "KQL", "Python"],
     },
     {
       group: "Power Platform and Cloud",
-      items:
-        "Power Apps, Dataverse, Power Automate, Copilot Studio, Azure, Microsoft Entra ID, Git",
+      items: [
+        "Power Apps",
+        "Dataverse",
+        "Power Automate",
+        "Copilot Studio",
+        "Azure",
+        "Microsoft Entra ID",
+        "Git",
+      ],
     },
-    { group: "Languages", items: "Fluent in English and Arabic" },
+    { group: "Languages", items: ["Fluent in English and Arabic"] },
   ],
 
   education: {

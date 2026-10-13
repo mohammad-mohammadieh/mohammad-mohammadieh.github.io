@@ -1,18 +1,28 @@
 /* Components for the "Report" design. Mobile first.
    Breakpoints: 640px (type), 720px (two columns), 1000px (margin column). */
 
-/* ---------- Masthead ---------- */
+/* ---------- Masthead: stays at the top while the page scrolls ---------- */
+
+/* On a phone the name row scrolls away and only the row of links stays, so the
+   bar is short. The negative offset is the height of that first row. */
+.masthead {
+  position: sticky;
+  top: calc(-1 * (var(--s3) + 3rem + var(--s1)));
+  z-index: 20;
+  background: var(--bg);
+}
 
 .masthead__inner {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: minmax(3rem, auto) auto;
   grid-template-areas:
     "id email"
     "nav nav";
   align-items: center;
   column-gap: var(--s5);
   row-gap: var(--s1);
-  padding-block: var(--s4) var(--s2);
+  padding-block: var(--s3) var(--s2);
   border-bottom: 1px solid var(--line);
 }
 
@@ -68,6 +78,12 @@
   text-decoration-color: var(--accent);
 }
 
+/* The section being read. Set by the script in Base.astro on the home page. */
+.masthead__nav a[aria-current] {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
 .masthead__email {
   grid-area: email;
   font-size: 0.9375rem;
@@ -75,10 +91,15 @@
 }
 
 @media (min-width: 720px) {
+  .masthead {
+    top: 0;
+  }
+
   .masthead__inner {
     grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-rows: auto;
     grid-template-areas: "id nav email";
-    padding-block: var(--s5);
+    padding-block: var(--s3);
   }
 
   .masthead__nav ul {
@@ -189,30 +210,6 @@
   }
 }
 
-/* Compact variant: a small table of value and label, used in project entries. */
-.figures--sm {
-  gap: 6px;
-  align-content: start;
-}
-
-.figures--sm .figures__item {
-  flex-direction: row-reverse;
-  justify-content: flex-end;
-  align-items: baseline;
-  gap: var(--s3);
-}
-
-.figures--sm .figures__value {
-  flex: none;
-  min-width: 4ch;
-  font-size: 1.0625rem;
-  line-height: 1.45;
-}
-
-.figures--sm .figures__label {
-  max-width: none;
-}
-
 /* ---------- Numbered section ---------- */
 
 .section__grid {
@@ -235,9 +232,7 @@
 .section__num,
 .entry__num,
 .case__num,
-.figure__num,
-.strip__num,
-.toc__num {
+.figure__num {
   font-family: var(--font-mono);
   font-size: var(--text-meta);
   font-weight: 500;
@@ -248,7 +243,7 @@
 @media (min-width: 1000px) {
   .section__head {
     position: sticky;
-    top: var(--s5);
+    top: calc(var(--header-h) + var(--s5));
     align-self: start;
   }
 
@@ -313,7 +308,8 @@
 
 .related a {
   padding-block: 5px;
-  color: var(--ink);
+  color: var(--accent);
+  text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
 }
 
 @media (min-width: 640px) {
@@ -326,7 +322,8 @@
 }
 
 .related a:hover {
-  color: var(--accent);
+  color: var(--accent-strong);
+  text-decoration-color: currentColor;
 }
 
 @media (min-width: 720px) {
@@ -364,33 +361,37 @@
   }
 }
 
-/* ---------- Project list on the home page ---------- */
+/* ---------- Project cards on the home page: five equal cards ---------- */
 
 .entries {
   display: grid;
-  gap: var(--s7);
+  grid-auto-rows: 1fr;
+  gap: var(--s5);
   margin-top: var(--s6);
 }
 
-.entries__grid {
-  display: grid;
-  gap: var(--s7) var(--gutter);
+@media (min-width: 600px) {
+  .entries {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .entry {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--s4);
-  padding-top: var(--s4);
-  border-top: 1px solid var(--line);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  transition:
+    border-color var(--fast) var(--ease),
+    transform 160ms var(--ease-out);
 }
 
 .entry__thumb {
   overflow: hidden;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-bottom: 1px solid var(--line);
+  border-radius: 3px 3px 0 0;
 }
 
 .entry__thumb img {
@@ -401,27 +402,26 @@
 }
 
 /* A card whose project has no hero image yet keeps the same picture space. */
-.entry__thumb--empty {
-  border: 0;
-  background: none;
-}
-
 .entry__thumb--empty .slot {
   aspect-ratio: 16 / 10;
+  border: 0;
+  border-radius: 0;
+}
+
+.entry__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  padding: var(--s4);
 }
 
 .entry__title {
-  margin-top: var(--s1);
   font-size: 1.0625rem;
   line-height: 1.4;
 }
 
-.entry--feature .entry__title {
-  font-size: 1.375rem;
-  line-height: 1.3;
-}
-
-/* The title link covers the whole entry, so the entry is one click target. */
+/* The title link covers the whole card, so the card is one click target. */
 .entry__title a {
   text-decoration: none;
 }
@@ -429,104 +429,84 @@
 .entry__title a::after {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -1px;
+  border-radius: var(--radius);
 }
 
 .entry__arrow {
   color: var(--muted);
   transition:
-    transform var(--fast) var(--ease),
+    transform 160ms var(--ease-out),
     color var(--fast) var(--ease);
 }
 
-.entry:hover .entry__title a {
-  color: var(--accent);
-}
-
-.entry:hover .entry__arrow {
-  color: var(--accent);
-  transform: translateX(3px);
-}
-
 .entry__summary {
-  max-width: 60ch;
-  margin-top: var(--s2);
+  font-size: 0.9375rem;
+  line-height: 1.5;
 }
 
-.entry__meta {
+.entry__foot {
   display: grid;
-  gap: 2px;
-  margin: auto 0 0;
+  gap: var(--s2);
+  margin-top: auto;
+  padding-top: var(--s2);
+}
+
+.entry__note {
   font-family: var(--font-mono);
-  font-size: var(--text-meta);
+  font-size: 0.75rem;
   line-height: 1.5;
   color: var(--muted);
 }
 
-.entry__status {
-  color: var(--ink);
+/* Keyboard focus shows on the whole card, with the same accent as hover. */
+.entry__title a:focus-visible {
+  outline: none;
 }
 
-@media (min-width: 720px) {
-  .entries__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+.entry__title a:focus-visible::after {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.entry:focus-within {
+  border-color: var(--accent);
+}
+
+.entry:focus-within .entry__title a,
+.entry:focus-within .entry__arrow {
+  color: var(--accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .entry:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
   }
 
-  .entry--feature {
-    display: grid;
-    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
-    grid-template-areas:
-      "text figs"
-      "meta figs";
-    column-gap: var(--gutter);
+  .entry:hover .entry__title a,
+  .entry:hover .entry__arrow {
+    color: var(--accent);
   }
 
-  /* With a hero image the first project reads as a lead story: picture left, text right. */
-  .entry--feature.entry--media {
-    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-    grid-template-rows: auto auto 1fr;
-    grid-template-areas:
-      "thumb text"
-      "thumb figs"
-      "thumb meta";
-    align-items: start;
+  .entry:hover .entry__arrow {
+    transform: translateX(3px);
   }
 
-  .entry--feature .entry__thumb {
-    grid-area: thumb;
-  }
-
-  .entry--feature.entry--media .figures {
-    padding-top: 0;
-  }
-
-  .entry--feature.entry--media .entry__meta {
-    align-self: end;
-  }
-
-  .entry--feature .entry__text {
-    grid-area: text;
-  }
-
-  .entry--feature .figures {
-    grid-area: figs;
-    padding-top: 26px;
-  }
-
-  .entry--feature .entry__meta {
-    grid-area: meta;
-    margin: 0;
+  .entry:active {
+    transform: none;
   }
 }
 
-/* ---------- Skills ---------- */
+/* ---------- Skills: tags under each group ---------- */
 
 .skills {
   display: grid;
-  gap: var(--s4);
+  gap: var(--s5);
 }
 
 .skills dt {
+  margin-bottom: var(--s2);
   font-weight: 600;
 }
 
@@ -535,6 +515,11 @@
     display: grid;
     grid-template-columns: 232px minmax(0, 1fr);
     column-gap: var(--s5);
+    align-items: baseline;
+  }
+
+  .skills dt {
+    margin-bottom: 0;
   }
 }
 
@@ -601,11 +586,7 @@
 /* ---------- Case study: header ---------- */
 
 .case__header {
-  padding-block: var(--s5) var(--s7);
-}
-
-.case__aside {
-  align-self: start;
+  padding-block: var(--s4) var(--s7);
 }
 
 .back .icon {
@@ -627,33 +608,30 @@
   text-decoration-color: var(--accent);
 }
 
-/* The in-page list of sections lives in the margin column on wide screens. */
-.toc {
-  display: none;
+.case__top {
+  margin-top: var(--s3);
 }
 
 .case__title {
   max-width: 20ch;
-  margin-top: var(--s3);
-  font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+  margin-top: var(--s2);
+  font-size: clamp(2rem, 1.4rem + 2.4vw, 2.75rem);
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
 
 .case__summary {
   max-width: 58ch;
-  margin-top: var(--s5);
-  font-size: 1.1875rem;
+  margin-top: var(--s4);
+  font-size: 1.125rem;
   line-height: 1.5;
 }
 
 .case__meta {
   display: grid;
-  gap: 6px;
+  gap: var(--s2);
   max-width: var(--measure);
-  margin-top: var(--s6);
-  padding-block: var(--s4);
-  border-block: 1px solid var(--line);
+  margin-top: var(--s5);
   font-family: var(--font-mono);
   font-size: var(--text-meta);
   line-height: 1.5;
@@ -661,73 +639,76 @@
 
 .case__meta > div {
   display: grid;
-  grid-template-columns: 72px minmax(0, 1fr);
-  column-gap: var(--s4);
+  grid-template-columns: 56px minmax(0, 1fr);
+  column-gap: var(--s3);
+  align-items: baseline;
 }
 
 .case__meta dt {
   color: var(--muted);
 }
 
-.case__figures {
-  margin-top: var(--s6);
+.case__intro > .note {
+  margin-top: var(--s5);
 }
 
-.case__head > .note,
-.case__head > .figure {
+.case__lead {
   margin-top: var(--s5);
+}
+
+/* The project's key numbers, in one compact strip right under the highlight video. */
+.case__figures {
+  margin-top: var(--s4);
+}
+
+.figures--strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s6);
+  padding: var(--s3) var(--s4);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.figures--strip .figures__item {
+  flex-direction: row-reverse;
+  align-items: baseline;
+  gap: var(--s2);
+}
+
+.figures--strip .figures__value {
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+.figures--strip .figures__label {
+  max-width: none;
+  font-size: 0.875rem;
 }
 
 @media (min-width: 640px) {
   .case__header {
-    padding-block: var(--s6) var(--s8);
+    padding-block: var(--s5) var(--s8);
   }
 }
 
+/* Wide screens: text on the left, the highlight video and the numbers on the right,
+   so both are on the first screen. */
 @media (min-width: 1000px) {
-  .case__header {
-    padding-top: var(--s7);
+  .case__top--split {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    column-gap: var(--gutter);
+    align-items: start;
   }
 
-  .back {
-    margin-top: -12px;
+  .case__top--split .case__lead {
+    margin-top: var(--s2);
   }
 
-  .toc {
-    display: block;
-    margin-top: var(--s6);
-  }
-
-  .toc__label {
-    margin-bottom: var(--s2);
-    font-family: var(--font-mono);
-    font-size: var(--text-meta);
-    color: var(--muted);
-  }
-
-  .toc ol {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .toc a {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    padding-block: 5px;
-    font-size: 0.9375rem;
-    line-height: 1.4;
-    color: var(--muted);
-    text-decoration-color: transparent;
-    transition:
-      color var(--fast) var(--ease),
-      text-decoration-color var(--fast) var(--ease);
-  }
-
-  .toc a:hover {
-    color: var(--ink);
-    text-decoration-color: var(--accent);
+  .case__top--split .case__title {
+    font-size: 2.5rem;
   }
 }
 
@@ -978,8 +959,8 @@ a.figure__frame:hover {
   align-items: center;
   gap: var(--s2);
   padding: 0 var(--s4);
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--accent);
+  color: var(--on-accent);
   border-radius: var(--radius);
   font-size: 0.9375rem;
   font-weight: 500;
@@ -987,7 +968,7 @@ a.figure__frame:hover {
 }
 
 a.video:hover .video__play {
-  background: var(--accent);
+  background: var(--accent-strong);
 }
 
 /* ---------- Full-size image dialog ---------- */
@@ -1206,11 +1187,20 @@ a.video:hover .video__play {
   }
 }
 
+.pager__cell {
+  transition:
+    color var(--fast) var(--ease),
+    border-color var(--fast) var(--ease);
+}
+
+a.pager__cell:hover {
+  border-top-color: var(--accent);
+}
+
 /* ---------- Touch screens: small text links get a full-size target ---------- */
 
 @media (pointer: coarse) {
-  .related a,
-  .toc a {
+  .related a {
     padding-block: 12px;
   }
 }
@@ -1229,69 +1219,6 @@ a.video:hover .video__play {
 .video:focus-within {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
-}
-
-/* ---------- Home page: one row of project thumbnails under the intro ---------- */
-
-.strip {
-  margin-top: var(--s7);
-}
-
-/* Below 720px the row scrolls sideways inside its own box. The page never does.
-   The padding keeps the focus ring of a thumbnail inside the scrolling box. */
-.strip__list {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: minmax(148px, 44%);
-  gap: var(--s4);
-  margin: -6px;
-  padding: 6px 6px var(--s3);
-  overflow-x: auto;
-  list-style: none;
-}
-
-.strip__link {
-  display: block;
-  text-decoration: none;
-}
-
-/* The frame itself is the shared figure frame. */
-.strip__thumb {
-  aspect-ratio: 16 / 10;
-}
-
-.strip__thumb img {
-  height: 100%;
-  object-fit: cover;
-  object-position: left top;
-}
-
-.strip__num,
-.strip__title {
-  display: block;
-}
-
-.strip__num {
-  margin-top: var(--s2);
-}
-
-.strip__title {
-  font-size: 0.875rem;
-  font-weight: 600;
-  line-height: 1.35;
-}
-
-.strip__link:hover .strip__thumb {
-  border-color: var(--accent);
-}
-
-@media (min-width: 720px) {
-  .strip__list {
-    grid-auto-flow: row;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    padding-bottom: 6px;
-    overflow: visible;
-  }
 }
 
 /* ---------- Work: case study links under a job ---------- */

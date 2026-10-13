@@ -3,7 +3,7 @@
 The source of my portfolio site, published with GitHub Pages at
 <https://mohammadmohammadieh.com>.
 
-It is a static site built with [Astro](https://astro.build) and hand-written CSS. The browser receives plain HTML and CSS. The only JavaScript is about 1 KB, on project pages, for the full-size image view.
+It is a static site built with [Astro](https://astro.build) and hand-written CSS. The browser receives plain HTML and CSS. The JavaScript is about 2 KB: the full-size image view on project pages, and a short script that marks the current section in the top bar and fades sections in as they are reached. Everything is readable without it.
 
 ## What is shown, and what is not
 
@@ -43,7 +43,7 @@ The repository must be named `mohammad-mohammadieh.github.io`, with Pages set to
 1. Copy `src/content/projects/_template/` to a new folder. The folder name is the page address, for example `my-new-project` becomes `/projects/my-new-project/`.
 2. Fill in the front matter and write the four sections: The problem, What I built, How it works, What it shows. Set `draft: false` when it is ready.
 3. Add the media when it exists (see below).
-4. Run `npm run build`. The home page card, the numbering (2.1, 2.2), the project page, the previous and next links and the sitemap are all generated.
+4. Run `npm run build`. The home page card, the numbering (1.1, 1.2), the project page, the previous and next links and the sitemap are all generated.
 
 No other file changes. Run `npm run images` as well to give the project its own link preview image.
 
@@ -123,7 +123,7 @@ src/content.config.ts           the fields a project may have, and the status ru
 public/media/<name>/            the videos
 src/pages/                      home page, project page template, 404, robots.txt
 src/components/                 page parts (section, figures, media area, pager ...)
-src/styles/                     tokens.css (colors, spacing), base.css, components.css
+src/styles/                     tokens.css (colors, the one accent, spacing), base.css, components.css
 scripts/                        checks, image and media helpers
 .github/workflows/deploy.yml    build and deploy to GitHub Pages
 ```

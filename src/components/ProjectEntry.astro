@@ -1,27 +1,30 @@
 ---
+// One project card on the home page. Every card has the same parts in the same
+// order: hero image, number, title, one line, tool tags.
 import { Image } from "astro:assets";
 import Icon from "./Icon.astro";
-import FiguresRow from "./FiguresRow.astro";
 import MediaSlot from "./MediaSlot.astro";
 import { ROLE_LABEL, STATUS_LABEL, projectHref, type Project } from "../lib/projects";
 
 interface Props {
   project: Project;
   number: string;
-  /** The first project is shown full width. */
-  feature?: boolean;
   /** Hold the picture area with an empty frame when this project has no hero image yet. */
   reserveThumb?: boolean;
 }
 
-const { project, number, feature = false, reserveThumb = false } = Astro.props;
+const { project, number, reserveThumb = false } = Astro.props;
 const { data } = project;
-const figures = data.figures.filter((f) => f.scope === "original").slice(0, 3);
 const cover = data.cover;
-const thumbWidths = cover ? [480, 640, 960, 1280].filter((w) => w <= cover.src.width) : [];
+const thumbWidths = cover ? [480, 640, 960].filter((w) => w <= cover.src.width) : [];
+// Shown only when there is something to say: team work, or media still to come.
+const notes = [
+  data.role === "contributed" ? ROLE_LABEL[data.role] : null,
+  data.status !== "media" ? STATUS_LABEL[data.status] : null,
+].filter((note) => note !== null);
 ---
 
-<article class:list={["entry", { "entry--feature": feature, "entry--media": cover || reserveThumb }]}>
+<article class="entry">
   {
     cover ? (
       <div class="entry__thumb">
@@ -32,11 +35,7 @@ const thumbWidths = cover ? [480, 640, 960, 1280].filter((w) => w <= cover.src.w
           quality={82}
           width={thumbWidths.at(-1) ?? cover.src.width}
           widths={thumbWidths.length ? thumbWidths : [cover.src.width]}
-          sizes={
-            feature
-              ? "(min-width: 1000px) 500px, (min-width: 720px) 55vw, calc(100vw - 48px)"
-              : "(min-width: 1000px) 412px, (min-width: 720px) 50vw, calc(100vw - 48px)"
-          }
+          sizes="(min-width: 1000px) 424px, (min-width: 600px) 50vw, calc(100vw - 48px)"
           loading="lazy"
           decoding="async"
         />
@@ -49,7 +48,7 @@ const thumbWidths = cover ? [480, 640, 960, 1280].filter((w) => w <= cover.src.w
       )
     )
   }
-  <div class="entry__text">
+  <div class="entry__body">
     <p class="entry__num">{number}</p>
     <h3 class="entry__title">
       <a href={projectHref(project)}>
@@ -57,32 +56,11 @@ const thumbWidths = cover ? [480, 640, 960, 1280].filter((w) => w <= cover.src.w
       </a>
     </h3>
     <p class="entry__summary">{data.summary}</p>
-  </div>
-  {
-    figures.length > 0 && (
-      <FiguresRow items={figures} label={`${data.title} in numbers`} size="sm" />
-    )
-  }
-  <dl class="entry__meta">
-    <div>
-      <dt class="visually-hidden">Stack</dt>
-      <dd>{data.stack.join(", ")}</dd>
+    <div class="entry__foot">
+      <ul class="tags" aria-label="Tools">
+        {data.stack.map((tool) => <li class="tag">{tool}</li>)}
+      </ul>
+      {notes.length > 0 && <p class="entry__note">{notes.join(". ")}</p>}
     </div>
-    {
-      data.role === "contributed" && (
-        <div>
-          <dt class="visually-hidden">Role</dt>
-          <dd>{ROLE_LABEL[data.role]}</dd>
-        </div>
-      )
-    }
-    {
-      data.status !== "media" && (
-        <div>
-          <dt class="visually-hidden">Status</dt>
-          <dd class="entry__status">{STATUS_LABEL[data.status]}</dd>
-        </div>
-      )
-    }
-  </dl>
+  </div>
 </article>

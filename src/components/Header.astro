@@ -4,20 +4,22 @@ import { site, mailto } from "../data/site";
 interface Props {
   /** On the home page the name is the page heading. */
   home?: boolean;
+  /** A section to mark as current on pages that belong to it, for example a project page. */
+  current?: string;
 }
 
-const { home = false } = Astro.props;
+const { home = false, current } = Astro.props;
 const NameTag = home ? "h1" : "p";
 
 const nav = [
-  { label: "Work", href: "/#work" },
   { label: "Projects", href: "/#projects" },
+  { label: "Work", href: "/#work" },
   { label: "Skills", href: "/#skills" },
   { label: "Contact", href: "/#contact" },
 ];
 ---
 
-<header class="masthead">
+<header class="masthead" data-spy={home ? "" : undefined}>
   <div class="wrap masthead__inner">
     <div class="masthead__id">
       <NameTag class="masthead__name"><a href="/">{site.name}</a></NameTag>
@@ -28,7 +30,9 @@ const nav = [
         {
           nav.map((item) => (
             <li>
-              <a href={item.href}>{item.label}</a>
+              <a href={item.href} aria-current={item.href === `/#${current}` ? "true" : undefined}>
+                {item.label}
+              </a>
             </li>
           ))
         }

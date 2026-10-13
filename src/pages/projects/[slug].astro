@@ -68,56 +68,48 @@ const ogImage = existsSync(join(process.cwd(), "public", "og", `${project.id}.pn
   : "/og-home.png";
 ---
 
-<Base title={title} description={description} ogImage={ogImage} ogType="article">
+<Base title={title} description={description} ogImage={ogImage} ogType="article" section="projects">
   <article class="case">
     <header class="case__header">
-      <div class="wrap section__grid">
-        <div class="case__aside">
-          <a class="back" href="/#projects">
-            <Icon name="arrow-left" />
-            All projects
-          </a>
-          <nav class="toc" aria-label="On this page">
-            <p class="toc__label">On this page</p>
-            <ol>
-              {
-                sections.map((s, i) => (
-                  <li>
-                    <a href={`#${s.id}`}>
-                      <span class="toc__num">{i + 1}</span>
-                      {s.title}
-                    </a>
-                  </li>
-                ))
-              }
-            </ol>
-          </nav>
-        </div>
+      <div class="wrap">
+        <a class="back" href="/#projects">
+          <Icon name="arrow-left" />
+          All projects
+        </a>
 
-        <div class="case__head">
-          <p class="case__num">Project {number}</p>
-          <h1 class="case__title">{data.title}</h1>
-          <p class="case__summary">{data.summary}</p>
+        <div class:list={["case__top", { "case__top--split": highlight }]}>
+          <div class="case__intro">
+            <p class="case__num">Project {number}</p>
+            <h1 class="case__title">{data.title}</h1>
+            <p class="case__summary">{data.summary}</p>
 
-          <ConfidentialityNote extra={data.noteExtra} />
+            <dl class="case__meta">
+              <div>
+                <dt>Tools</dt>
+                <dd>
+                  <ul class="tags">
+                    {data.stack.map((tool) => <li class="tag">{tool}</li>)}
+                  </ul>
+                </dd>
+              </div>
+              <div>
+                <dt>Role</dt>
+                <dd>{data.roleDetail ?? ROLE_LABEL[data.role]}</dd>
+              </div>
+            </dl>
 
-          {highlight && <VideoEmbed video={highlight} number={1} />}
-
-          <dl class="case__meta">
-            <div>
-              <dt>Stack</dt>
-              <dd>{data.stack.join(", ")}</dd>
-            </div>
-            <div>
-              <dt>Role</dt>
-              <dd>{data.roleDetail ?? ROLE_LABEL[data.role]}</dd>
-            </div>
-          </dl>
+            <ConfidentialityNote extra={data.noteExtra} />
+          </div>
 
           {
-            originalFigures.length > 0 && (
-              <div class="case__figures">
-                <FiguresRow items={originalFigures} label="The project in numbers" />
+            (highlight || originalFigures.length > 0) && (
+              <div class="case__lead">
+                {highlight && <VideoEmbed video={highlight} number={1} />}
+                {originalFigures.length > 0 && (
+                  <div class="case__figures">
+                    <FiguresRow items={originalFigures} label="The project in numbers" size="strip" />
+                  </div>
+                )}
               </div>
             )
           }
@@ -146,7 +138,7 @@ const ogImage = existsSync(join(process.cwd(), "public", "og", `${project.id}.pn
     }
 
     <footer class="case__footer">
-      <div class="wrap section__grid">
+      <div class="wrap section__grid" data-reveal>
         <div class="case__footer-body">
           <Pager prev={prev} next={next} />
           <p class="case__ask">

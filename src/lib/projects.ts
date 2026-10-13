@@ -21,8 +21,8 @@ export async function getProjects(): Promise<Project[]> {
   );
 }
 
-/** Projects are section 2 of the home page, so they are numbered 2.1, 2.2 and so on. */
-export const projectNumber = (index: number) => `2.${index + 1}`;
+/** Projects are section 1 of the home page, so they are numbered 1.1, 1.2 and so on. */
+export const projectNumber = (index: number) => `1.${index + 1}`;
 
 export const projectHref = (project: Project) => `/projects/${project.id}/`;
 

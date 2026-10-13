@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets";
 import Base from "../layouts/Base.astro";
 import Section from "../components/Section.astro";
 import FiguresRow from "../components/FiguresRow.astro";
@@ -10,7 +9,6 @@ import { getProjects, projectHref, projectNumber } from "../lib/projects";
 
 const projects = await getProjects();
 const bySlug = new Map(projects.map((p) => [p.id, p]));
-const [lead, ...rest] = projects;
 
 // Search engines get the same facts the page shows. No employer, no clients.
 const jsonLd = {
@@ -50,50 +48,29 @@ const anyCover = projects.some((p) => p.data.cover);
           </a>
           <a class="link" href={mailto}>Email</a>
         </div>
-        {
-          projects.some((p) => p.data.cover) && (
-            <nav class="strip" aria-label="Projects at a glance">
-              <ul class="strip__list">
-                {projects.map(
-                  (p, i) =>
-                    p.data.cover && (
-                      <li>
-                        <a class="strip__link" href={projectHref(p)}>
-                          <span class="strip__thumb figure__frame">
-                            <Image
-                              src={p.data.cover.src}
-                              alt={p.data.cover.title ?? `${p.data.title}, first screen`}
-                              format="webp"
-                              quality={80}
-                              width={480}
-                              widths={[240, 480]}
-                              sizes="(min-width: 1000px) 162px, (min-width: 720px) 18vw, 45vw"
-                              loading="eager"
-                              decoding="async"
-                            />
-                          </span>
-                          <span class="strip__num">{projectNumber(i)}</span>
-                          <span class="strip__title">{p.data.title}</span>
-                        </a>
-                      </li>
-                    ),
-                )}
-              </ul>
-            </nav>
-          )
-        }
       </div>
     </div>
   </section>
 
   <section class="band" aria-labelledby="band-label">
-    <div class="wrap section__grid">
+    <div class="wrap section__grid" data-reveal>
       <p class="band__label" id="band-label">{site.figures.label}</p>
       <FiguresRow items={figures} label={site.figures.label} />
     </div>
   </section>
 
-  <Section id="work" number="1" title="Work">
+  <Section id="projects" number="1" title="Projects">
+    <p class="lede">{site.projectsIntro}</p>
+    <div class="entries">
+      {
+        projects.map((project, i) => (
+          <ProjectEntry project={project} number={projectNumber(i)} reserveThumb={anyCover} />
+        ))
+      }
+    </div>
+  </Section>
+
+  <Section id="work" number="2" title="Work">
     <div class="jobs">
       {
         site.work.map((job) => (
@@ -134,29 +111,19 @@ const anyCover = projects.some((p) => p.data.cover);
     </div>
   </Section>
 
-  <Section id="projects" number="2" title="Projects">
-    <p class="lede">{site.projectsIntro}</p>
-    <div class="entries">
-      {lead && <ProjectEntry project={lead} number={projectNumber(0)} feature reserveThumb={anyCover} />}
-      {
-        rest.length > 0 && (
-          <div class="entries__grid">
-            {rest.map((project, i) => (
-              <ProjectEntry project={project} number={projectNumber(i + 1)} reserveThumb={anyCover} />
-            ))}
-          </div>
-        )
-      }
-    </div>
-  </Section>
-
   <Section id="skills" number="3" title="Skills">
     <dl class="skills">
       {
         site.skills.map((skill) => (
           <div class="skills__row">
             <dt>{skill.group}</dt>
-            <dd>{skill.items}</dd>
+            <dd>
+              <ul class="tags">
+                {skill.items.map((item) => (
+                  <li class="tag">{item}</li>
+                ))}
+              </ul>
+            </dd>
           </div>
         ))
       }

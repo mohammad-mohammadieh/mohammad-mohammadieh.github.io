@@ -46,7 +46,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: var(--s5);
+  scroll-padding-top: calc(var(--header-h) + var(--s4));
   accent-color: var(--accent);
   scrollbar-color: color-mix(in srgb, var(--muted) 55%, transparent) transparent;
 }
@@ -126,18 +126,39 @@ strong {
   font-weight: 600;
 }
 
-/* Links: ink text, a one pixel accent underline, accent text on hover. */
+/* Links. Navigation and titles are ink and turn accent on hover.
+   Text links (.link, links in written sections) are accent from the start. */
 a {
   color: inherit;
   text-decoration-line: underline;
   text-decoration-color: var(--accent);
   text-decoration-thickness: 1px;
   text-underline-offset: 3px;
-  transition: color var(--fast) var(--ease);
+  transition:
+    color var(--fast) var(--ease),
+    text-decoration-color var(--fast) var(--ease);
 }
 
 a:hover {
   color: var(--accent);
+}
+
+.link,
+.prose a,
+.note a,
+.figure__caption a,
+.tryit a {
+  color: var(--accent);
+  text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.link:hover,
+.prose a:hover,
+.note a:hover,
+.figure__caption a:hover,
+.tryit a:hover {
+  color: var(--accent-strong);
+  text-decoration-color: currentColor;
 }
 
 :focus-visible {
@@ -191,7 +212,7 @@ a > .icon:first-child {
   position: absolute;
   top: var(--s4);
   left: var(--s4);
-  z-index: 10;
+  z-index: 30;
   display: inline-flex;
   align-items: center;
   min-height: 44px;
@@ -209,7 +230,7 @@ a > .icon:first-child {
   color: var(--bg);
 }
 
-/* Primary button. At most one per screen. */
+/* Primary button, in the accent. At most one per screen. */
 .button {
   display: inline-flex;
   align-items: center;
@@ -217,8 +238,8 @@ a > .icon:first-child {
   gap: var(--s2);
   min-height: 44px;
   padding: 0 20px;
-  background: var(--ink);
-  color: var(--bg);
+  background: var(--accent);
+  color: var(--on-accent);
   border: 0;
   border-radius: var(--radius);
   font: inherit;
@@ -230,16 +251,23 @@ a > .icon:first-child {
   cursor: pointer;
   transition:
     background-color var(--fast) var(--ease),
-    transform var(--fast) var(--ease);
+    color var(--fast) var(--ease),
+    box-shadow var(--fast) var(--ease),
+    transform var(--fast) var(--ease-out);
 }
 
 .button:hover {
-  background: var(--accent);
-  color: var(--bg);
+  background: var(--accent-strong);
+  color: var(--on-accent);
 }
 
 .button:active {
-  transform: translateY(1px);
+  transform: scale(0.98);
+}
+
+.button:focus-visible {
+  outline-offset: 3px;
+  border-radius: var(--radius);
 }
 
 /* A text link that needs a full-size touch target (actions, footer, masthead). */
@@ -275,5 +303,53 @@ figcaption .link {
 .button--quiet {
   background: transparent;
   color: var(--ink);
-  box-shadow: inset 0 0 0 1px var(--ink);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 55%, var(--line));
+}
+
+.button--quiet:hover {
+  background: transparent;
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+/* Small neutral labels: a project's tools, the skills. */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tag {
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+/* Sections rise in once as they enter the viewport. The script adds .is-pending only to
+   sections below the first screen, so without JavaScript, or with reduced motion,
+   nothing is ever hidden. Opacity and transform only: no layout shift. */
+[data-reveal] {
+  transition:
+    opacity 320ms var(--ease-out),
+    transform 320ms var(--ease-out);
+}
+
+[data-reveal].is-pending {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+@media (prefers-reduced-motion: reduce), print {
+  [data-reveal].is-pending {
+    opacity: 1;
+    transform: none;
+  }
 }

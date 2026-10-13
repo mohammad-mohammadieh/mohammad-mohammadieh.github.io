@@ -11,7 +11,12 @@
   --ink: #15171c;
   --muted: #555b66;
   --line: #d5d8de;
+  /* The one accent: links, primary buttons, section numbers, focus rings, small highlights.
+     Everything else is neutral. --accent-strong is the hover and pressed shade; it moves
+     toward the ink color, so text on it gains contrast in both themes. */
   --accent: #b93a0b;
+  --on-accent: var(--bg);
+  --accent-strong: color-mix(in srgb, var(--accent) 84%, var(--ink));
 
   --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
     Arial, sans-serif;
@@ -42,6 +47,10 @@
   --radius: 4px;
   --fast: 140ms;
   --ease: cubic-bezier(0.2, 0, 0, 1);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+
+  /* Height of the sticky masthead once it is stuck. Anchors and sticky titles clear it. */
+  --header-h: 54px;
 
   /* Type sizes that change with the viewport */
   --text-meta: 0.8125rem;
@@ -51,6 +60,12 @@
 @media (min-width: 400px) {
   :root {
     --pad: 24px;
+  }
+}
+
+@media (min-width: 720px) {
+  :root {
+    --header-h: 69px;
   }
 }
 

@@ -11,7 +11,7 @@ const { id, number, title } = Astro.props;
 ---
 
 <section class="section" id={id} aria-labelledby={`${id}-title`}>
-  <div class="wrap section__grid">
+  <div class="wrap section__grid" data-reveal>
     <div class="section__head">
       <h2 class="section__title" id={`${id}-title`}>
         <span class="section__num">{number}</span>

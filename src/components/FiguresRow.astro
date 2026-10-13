@@ -5,7 +5,7 @@ interface Props {
   items: readonly { value: string; label: string }[];
   /** Accessible name for the list. */
   label: string;
-  size?: "lg" | "sm";
+  size?: "lg" | "strip";
 }
 
 const { items, label, size = "lg" } = Astro.props;
