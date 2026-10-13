@@ -12,7 +12,7 @@ export const GITHUB_USERNAME = "mohammad-mohammadieh";
 //    This is the GitHub Pages user site, served from the repository named
 //    <username>.github.io. Change it here if the site moves to its own domain.
 export const SITE_URL_PLACEHOLDER = "https://example.com";
-export const SITE_URL = "https://mohammad-mohammadieh.github.io";
+export const SITE_URL = "https://mohammadmohammadieh.com";
 
 // 3. The path the site is served under. "/" for a user site or a custom domain.
 //    A project site (username.github.io/repository) would need "/repository",

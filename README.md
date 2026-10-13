@@ -1,7 +1,7 @@
 # Portfolio website: Mohammad Mohammadieh
 
 The source of my portfolio site, published with GitHub Pages at
-<https://mohammad-mohammadieh.github.io>.
+<https://mohammadmohammadieh.com>.
 
 It is a static site built with [Astro](https://astro.build) and hand-written CSS. The browser receives plain HTML and CSS. The only JavaScript is about 1 KB, on project pages, for the full-size image view.
 
