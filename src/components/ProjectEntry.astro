@@ -1,6 +1,6 @@
 ---
 // One project card on the home page. Every card has the same parts in the same
-// order: hero image, number, title, one line, tool tags.
+// order: hero image, number, title, one line, one headline number, tool tags.
 import { Image } from "astro:assets";
 import Icon from "./Icon.astro";
 import MediaSlot from "./MediaSlot.astro";
@@ -16,6 +16,8 @@ interface Props {
 const { project, number, reserveThumb = false } = Astro.props;
 const { data } = project;
 const cover = data.cover;
+// The headline number: the first of the figures the project page shows.
+const figure = data.figures.find((f) => f.scope === "original");
 const thumbWidths = cover ? [480, 640, 960].filter((w) => w <= cover.src.width) : [];
 // Shown only when there is something to say: team work, or media still to come.
 const notes = [
@@ -56,6 +58,14 @@ const notes = [
       </a>
     </h3>
     <p class="entry__summary">{data.summary}</p>
+    {
+      figure && (
+        <p class="entry__figure">
+          <strong>{figure.value}</strong>
+          {figure.label}
+        </p>
+      )
+    }
     <div class="entry__foot">
       <ul class="tags" aria-label="Tools">
         {data.stack.map((tool) => <li class="tag">{tool}</li>)}

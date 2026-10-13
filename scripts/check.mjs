@@ -278,8 +278,8 @@ function contrast(a, b) {
 
 function checkContrast() {
   const css = read(join(root, "src/styles/tokens.css"));
-  const split = css.indexOf("prefers-color-scheme: dark");
-  const themes = { light: css.slice(0, split), dark: css.slice(split) };
+  // The site has one theme, so the whole file is one block.
+  const themes = { dark: css };
   for (const [theme, block] of Object.entries(themes)) {
     const token = (name) => block.match(new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{6})`))?.[1];
     const colors = Object.fromEntries(

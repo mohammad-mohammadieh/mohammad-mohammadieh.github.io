@@ -1,11 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <style>
-    .bg { fill: #f4f5f7; }
-    .mm { fill: none; stroke: #15171c; stroke-width: 4.5; stroke-linecap: butt; stroke-linejoin: bevel; }
-    @media (prefers-color-scheme: dark) {
-      .bg { fill: #111317; }
-      .mm { stroke: #eceef2; }
-    }
+    .bg { fill: #111317; }
+    .mm { fill: none; stroke: #eceef2; stroke-width: 4.5; stroke-linecap: butt; stroke-linejoin: bevel; }
   </style>
   <rect class="bg" width="64" height="64" rx="8"/>
   <path class="mm" d="M10 45V19l8.5 13 8.5-13v26M37 45V19l8.5 13 8.5-13v26"/>

@@ -144,19 +144,13 @@ a:hover {
 }
 
 .link,
-.prose a,
-.note a,
-.figure__caption a,
-.tryit a {
+.related a,
+:is(.prose, .note, .figure__caption, .tryit) a {
   color: var(--accent);
   text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
 }
 
-.link:hover,
-.prose a:hover,
-.note a:hover,
-.figure__caption a:hover,
-.tryit a:hover {
+:is(.link, .related a, :is(.prose, .note, .figure__caption, .tryit) a):hover {
   color: var(--accent-strong);
   text-decoration-color: currentColor;
 }
@@ -263,11 +257,6 @@ a > .icon:first-child {
 
 .button:active {
   transform: scale(0.98);
-}
-
-.button:focus-visible {
-  outline-offset: 3px;
-  border-radius: var(--radius);
 }
 
 /* A text link that needs a full-size touch target (actions, footer, masthead). */

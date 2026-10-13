@@ -20,11 +20,12 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const pub = join(root, "public");
 const tmp = join(root, ".tmp-images");
 
-const INK = "#15171c";
-const BG = "#f4f5f7";
-const MUTED = "#555b66";
-const LINE = "#d5d8de";
-const ACCENT = "#b93a0b";
+// The site's one theme (dark), as in src/styles/tokens.css.
+const INK = "#eceef2";
+const BG = "#111317";
+const MUTED = "#a3a9b5";
+const LINE = "#2a2e37";
+const ACCENT = "#ff8a57";
 
 // ------------------------------------------------------------------ icons
 
@@ -129,7 +130,7 @@ const cards = [
     out: join(pub, "og", `${project.slug}.png`),
     html: page(`
 <div class="card">
-  <p class="mono accent">Project 2.${i + 1}</p>
+  <p class="mono accent">Project 1.${i + 1}</p>
   <h1 class="title${project.title.length > 34 ? " long" : ""}">${escapeHtml(project.title)}</h1>
   <p class="summary">${escapeHtml(project.summary)}</p>
   <div class="foot mono muted">
