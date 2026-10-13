@@ -24,6 +24,8 @@ const projects = defineCollection({
         summary: z.string().min(1).max(160),
         stack: z.array(z.string().min(1)).min(1),
         role: z.enum(["built", "contributed"]),
+        // What exactly was mine, shown as the Role line on the project page.
+        roleDetail: z.string().min(1).max(80).optional(),
         figures: z
           .array(
             z.object({

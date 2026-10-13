@@ -1,6 +1,6 @@
 ---
 // Fixed text, shown on every project page above any image.
-// A project can add one sentence through `noteExtra`. It cannot replace the text.
+// A project can add one sentence through `noteExtra` when accuracy needs it. It cannot replace the text.
 import { site } from "../data/site";
 
 interface Props {
@@ -10,9 +10,8 @@ interface Props {
 const { extra } = Astro.props;
 ---
 
-<aside class="note" aria-labelledby="note-label">
+<aside class="note" aria-label="Confidentiality">
   <p>
-    <strong id="note-label">About this page.</strong>{" "}
     {site.confidentialityNote}
     {extra && ` ${extra}`}
   </p>

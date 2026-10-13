@@ -270,3 +270,10 @@ figcaption .link {
     scroll-behavior: auto !important;
   }
 }
+
+/* Second action next to a primary button: outlined, same size. */
+.button--quiet {
+  background: transparent;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}

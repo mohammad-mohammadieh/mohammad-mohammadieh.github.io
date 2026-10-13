@@ -5,7 +5,7 @@ import Base from "../../layouts/Base.astro";
 import Section from "../../components/Section.astro";
 import FiguresRow from "../../components/FiguresRow.astro";
 import ConfidentialityNote from "../../components/ConfidentialityNote.astro";
-import Figure from "../../components/Figure.astro";
+import VideoEmbed from "../../components/VideoEmbed.astro";
 import MediaArea from "../../components/MediaArea.astro";
 import TryIt from "../../components/TryIt.astro";
 import Pager from "../../components/Pager.astro";
@@ -13,7 +13,6 @@ import Icon from "../../components/Icon.astro";
 import { site, mailto } from "../../data/site";
 import {
   ROLE_LABEL,
-  STATUS_LABEL,
   formatDate,
   getProjects,
   projectNumber,
@@ -48,16 +47,18 @@ const { data } = project;
 // Sections 1 to 4 are the written Markdown body. The rest are generated.
 const written = splitBody(project.rendered?.html ?? "");
 const hasTryIt = Boolean(data.demo || data.repoUrl || data.downloads.length > 0);
+// The highlight video opens the page. The walkthrough and the screens follow it.
+const highlight = data.videos[0];
+const mediaTitle = data.videos.length > 1 ? "Walkthrough and screens" : "Screens";
 const sections = [
+  { id: "screens", title: mediaTitle },
   ...written,
-  { id: "screens-and-video", title: "Screens and video" },
   ...(hasTryIt ? [{ id: "try-it", title: "Try it" }] : []),
 ];
 const sectionNumber = (id: string) => String(sections.findIndex((s) => s.id === id) + 1);
 
-// Facts about the real project and numbers measured on what is shown never share a row.
+// Facts about the real project only. Numbers measured on the demo are left to the text.
 const originalFigures = data.figures.filter((f) => f.scope === "original").slice(0, 4);
-const shownFigures = data.figures.filter((f) => f.scope === "shown").slice(0, 4);
 
 const title = data.seo?.title ?? `${data.title} | ${site.name}`;
 const description = data.seo?.description ?? data.summary;
@@ -98,6 +99,10 @@ const ogImage = existsSync(join(process.cwd(), "public", "og", `${project.id}.pn
           <h1 class="case__title">{data.title}</h1>
           <p class="case__summary">{data.summary}</p>
 
+          <ConfidentialityNote extra={data.noteExtra} />
+
+          {highlight && <VideoEmbed video={highlight} number={1} />}
+
           <dl class="case__meta">
             <div>
               <dt>Stack</dt>
@@ -105,48 +110,24 @@ const ogImage = existsSync(join(process.cwd(), "public", "og", `${project.id}.pn
             </div>
             <div>
               <dt>Role</dt>
-              <dd>{ROLE_LABEL[data.role]}</dd>
-            </div>
-            <div>
-              <dt>Status</dt>
-              <dd>{STATUS_LABEL[data.status]}</dd>
+              <dd>{data.roleDetail ?? ROLE_LABEL[data.role]}</dd>
             </div>
           </dl>
 
           {
             originalFigures.length > 0 && (
               <div class="case__figures">
-                <p class="case__figures-label">The project in numbers</p>
                 <FiguresRow items={originalFigures} label="The project in numbers" />
               </div>
-            )
-          }
-          {
-            shownFigures.length > 0 && (
-              <div class="case__figures">
-                <p class="case__figures-label">In the demo copy shown here</p>
-                <FiguresRow items={shownFigures} label="In the demo copy shown here" />
-              </div>
-            )
-          }
-
-          <ConfidentialityNote extra={data.noteExtra} />
-
-          {
-            data.cover && (
-              <Figure
-                src={data.cover.src}
-                alt={data.cover.alt}
-                title={data.cover.title}
-                caption={data.cover.caption ?? `${data.title}. Synthetic data.`}
-                number={1}
-                eager
-              />
             )
           }
         </div>
       </div>
     </header>
+
+    <Section id="screens" number={sectionNumber("screens")} title={mediaTitle}>
+      <MediaArea project={project} skipVideos={highlight ? 1 : 0} />
+    </Section>
 
     {
       written.map((s) => (
@@ -155,14 +136,6 @@ const ogImage = existsSync(join(process.cwd(), "public", "og", `${project.id}.pn
         </Section>
       ))
     }
-
-    <Section
-      id="screens-and-video"
-      number={sectionNumber("screens-and-video")}
-      title="Screens and video"
-    >
-      <MediaArea project={project} firstFigure={data.cover ? 2 : 1} />
-    </Section>
 
     {
       hasTryIt && (

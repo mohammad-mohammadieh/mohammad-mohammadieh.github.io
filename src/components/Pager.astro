@@ -17,7 +17,7 @@ const { prev, next } = Astro.props;
       <a class="pager__cell pager__cell--prev" href={projectHref(prev.project)} rel="prev">
         <span class="pager__label">
           <Icon name="arrow-left" />
-          Previous, {prev.number}
+          Previous project
         </span>{" "}
         <span class="pager__title">{prev.project.data.title}</span>
       </a>
@@ -29,7 +29,7 @@ const { prev, next } = Astro.props;
     next ? (
       <a class="pager__cell pager__cell--next" href={projectHref(next.project)} rel="next">
         <span class="pager__label">
-          Next, {next.number}
+          Next project
           <Icon name="arrow-right" />
         </span>{" "}
         <span class="pager__title">{next.project.data.title}</span>

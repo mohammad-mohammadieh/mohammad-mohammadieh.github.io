@@ -126,20 +126,12 @@
   max-width: var(--measure);
 }
 
-.intro__text + .intro__text {
-  margin-top: var(--s4);
-}
-
 .intro__actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--s2) var(--s5);
   margin-top: var(--s6);
-}
-
-.intro__figure {
-  margin-top: var(--s7);
 }
 
 @media (min-width: 640px) {
@@ -156,8 +148,7 @@
   row-gap: var(--s4);
 }
 
-.band__label,
-.case__figures-label {
+.band__label {
   font-family: var(--font-mono);
   font-size: var(--text-meta);
   line-height: 1.5;
@@ -245,6 +236,7 @@
 .entry__num,
 .case__num,
 .figure__num,
+.strip__num,
 .toc__num {
   font-family: var(--font-mono);
   font-size: var(--text-meta);
@@ -681,13 +673,9 @@
   margin-top: var(--s6);
 }
 
-.case__figures-label {
-  margin-bottom: var(--s3);
-}
-
 .case__head > .note,
 .case__head > .figure {
-  margin-top: var(--s6);
+  margin-top: var(--s5);
 }
 
 @media (min-width: 640px) {
@@ -747,7 +735,10 @@
 
 .note {
   max-width: var(--measure);
-  padding: var(--s4);
+  padding: var(--s3) var(--s4);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--muted);
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -1238,4 +1229,98 @@ a.video:hover .video__play {
 .video:focus-within {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
+}
+
+/* ---------- Home page: one row of project thumbnails under the intro ---------- */
+
+.strip {
+  margin-top: var(--s7);
+}
+
+/* Below 720px the row scrolls sideways inside its own box. The page never does.
+   The padding keeps the focus ring of a thumbnail inside the scrolling box. */
+.strip__list {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(148px, 44%);
+  gap: var(--s4);
+  margin: -6px;
+  padding: 6px 6px var(--s3);
+  overflow-x: auto;
+  list-style: none;
+}
+
+.strip__link {
+  display: block;
+  text-decoration: none;
+}
+
+/* The frame itself is the shared figure frame. */
+.strip__thumb {
+  aspect-ratio: 16 / 10;
+}
+
+.strip__thumb img {
+  height: 100%;
+  object-fit: cover;
+  object-position: left top;
+}
+
+.strip__num,
+.strip__title {
+  display: block;
+}
+
+.strip__num {
+  margin-top: var(--s2);
+}
+
+.strip__title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.strip__link:hover .strip__thumb {
+  border-color: var(--accent);
+}
+
+@media (min-width: 720px) {
+  .strip__list {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    padding-bottom: 6px;
+    overflow: visible;
+  }
+}
+
+/* ---------- Work: case study links under a job ---------- */
+
+.job > .related {
+  margin-top: var(--s3);
+}
+
+/* ---------- Collapsed detail inside a written section ---------- */
+
+.more {
+  margin-top: var(--s5);
+  border-block: 1px solid var(--line);
+}
+
+.more > summary {
+  padding-block: var(--s3);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.more > summary::marker {
+  color: var(--accent);
+}
+
+.more > :not(summary) {
+  margin-top: var(--s4);
+}
+
+.more > :last-child {
+  margin-bottom: var(--s5);
 }

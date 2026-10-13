@@ -8,6 +8,7 @@ status: "writeup"             # writeup | media | live
 summary: "One sentence, 160 characters or fewer."
 stack: ["Tool one", "Tool two"]
 role: "built"                 # built | contributed
+roleDetail: "Design, data model"   # optional: which parts were yours, shown as the Role line
 figures:                      # optional, up to four are shown
   - { value: "0", label: "what the number counts" }
   # scope "shown" marks a fact about the demo copy, not the real project:
@@ -19,12 +20,11 @@ updated: 2026-01-01
 # "npm run media" writes the web copies into this folder and into public/media/.
 # Every image needs alt text that says what it shows.
 #
-# noteExtra: "What the screens really show: demo copy, synthetic data, invented names."
-# mediaNote: "One or two sentences above the videos and screenshots."
+# mediaNote: "Optional. One short sentence about the recording, above the walkthrough."
 # cover:
 #   src: "./01-name.webp"
 #   title: "Short title"
-#   caption: "One sentence under the hero image."
+#   caption: "One short sentence."
 #   alt: "What the screen shows."
 # gallery:                    # at least two, besides the cover
 #   - src: "./02-name.webp"
@@ -50,11 +50,11 @@ updated: 2026-01-01
 
 ## The problem
 
-Who needed what, in generic terms. 40 to 90 words. No client names or client detail.
+Who needed what, in generic terms. One or two sentences. No client names or client detail.
 
 ## What I built
 
-What exists and at what scale. 60 to 140 words, first person. Use "What I worked on" as the heading when role is "contributed". Say plainly what the screens and video show if it is a demo copy.
+What exists and at what scale. One to three sentences, first person. Use "What I worked on" as the heading when role is "contributed". The fixed note already covers synthetic data, so do not repeat it.
 
 ## How it works
 

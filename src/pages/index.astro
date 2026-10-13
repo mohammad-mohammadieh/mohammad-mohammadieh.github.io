@@ -28,8 +28,10 @@ const jsonLd = {
   alumniOf: { "@type": "CollegeOrUniversity", name: site.education.school },
 };
 
-const heroCover = lead?.data.cover;
-const heroWidths = heroCover ? [640, 960, 1280, 1920].filter((w) => w <= heroCover.src.width) : [];
+const figures = [
+  { value: String(projects.length), label: "projects shown on this site" },
+  ...site.figures.items,
+];
 // Once any project has a hero image, the others hold the same space with an empty frame.
 const anyCover = projects.some((p) => p.data.cover);
 ---
@@ -42,8 +44,44 @@ const anyCover = projects.some((p) => p.data.cover);
         {site.intro.paragraphs.map((text) => <p class="intro__text">{text}</p>)}
         <div class="intro__actions">
           <a class="button" href="#projects">See the projects</a>
+          <a class="button button--quiet" href={site.resume.href} download type="application/pdf">
+            <Icon name="download" />
+            {site.resume.label}
+          </a>
           <a class="link" href={mailto}>Email</a>
         </div>
+        {
+          projects.some((p) => p.data.cover) && (
+            <nav class="strip" aria-label="Projects at a glance">
+              <ul class="strip__list">
+                {projects.map(
+                  (p, i) =>
+                    p.data.cover && (
+                      <li>
+                        <a class="strip__link" href={projectHref(p)}>
+                          <span class="strip__thumb figure__frame">
+                            <Image
+                              src={p.data.cover.src}
+                              alt={p.data.cover.title ?? `${p.data.title}, first screen`}
+                              format="webp"
+                              quality={80}
+                              width={480}
+                              widths={[240, 480]}
+                              sizes="(min-width: 1000px) 162px, (min-width: 720px) 18vw, 45vw"
+                              loading="eager"
+                              decoding="async"
+                            />
+                          </span>
+                          <span class="strip__num">{projectNumber(i)}</span>
+                          <span class="strip__title">{p.data.title}</span>
+                        </a>
+                      </li>
+                    ),
+                )}
+              </ul>
+            </nav>
+          )
+        }
       </div>
     </div>
   </section>
@@ -51,7 +89,7 @@ const anyCover = projects.some((p) => p.data.cover);
   <section class="band" aria-labelledby="band-label">
     <div class="wrap section__grid">
       <p class="band__label" id="band-label">{site.figures.label}</p>
-      <FiguresRow items={site.figures.items} label={site.figures.label} />
+      <FiguresRow items={figures} label={site.figures.label} />
     </div>
   </section>
 
@@ -69,29 +107,27 @@ const anyCover = projects.some((p) => p.data.cover);
               </p>
             </header>
             <ul class="job__bullets">
-              {job.bullets.map((bullet) => {
-                const related = (bullet.related ?? [])
-                  .map((slug) => bySlug.get(slug))
-                  .filter((p) => p !== undefined);
-                return (
-                  <li>
-                    {bullet.text}
-                    {related.length > 0 && (
-                      <p class="related">
-                        <span class="related__label">
-                          {related.length > 1 ? "Related case studies" : "Related case study"}
-                        </span>
-                        <span class="related__links">
-                          {related.map((p) => (
-                            <a href={projectHref(p)}>{p.data.title}</a>
-                          ))}
-                        </span>
-                      </p>
-                    )}
-                  </li>
-                );
-              })}
+              {job.lines.map((line) => (
+                <li>{line}</li>
+              ))}
             </ul>
+            {(() => {
+              const related = (job.related ?? [])
+                .map((slug) => bySlug.get(slug))
+                .filter((p) => p !== undefined);
+              return (
+                related.length > 0 && (
+                  <p class="related">
+                    <span class="related__label">Case studies</span>
+                    <span class="related__links">
+                      {related.map((p) => (
+                        <a href={projectHref(p)}>{p.data.title}</a>
+                      ))}
+                    </span>
+                  </p>
+                )
+              );
+            })()}
           </article>
         ))
       }

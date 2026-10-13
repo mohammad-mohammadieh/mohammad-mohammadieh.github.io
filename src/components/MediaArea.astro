@@ -1,5 +1,6 @@
 ---
-// Section 5 of every project page: the videos, then the screenshot gallery.
+// First section of every project page: the full walkthrough, then the screenshots.
+// The highlight video sits in the page header, so it is skipped here.
 // Whatever exists is shown. Whatever does not exist yet is held by a neutral
 // empty frame, so the page reads as "media coming soon", not as broken.
 import Figure from "./Figure.astro";
@@ -10,14 +11,17 @@ import type { Project } from "../lib/projects";
 
 interface Props {
   project: Project;
-  /** Number of the first gallery figure (the cover, when present, is Fig. 1). */
-  firstFigure: number;
+  /** Videos already shown above this area. */
+  skipVideos?: number;
 }
 
-const { project, firstFigure } = Astro.props;
-const { gallery, videos, planned, mediaNote } = project.data;
+const { project, skipVideos = 0 } = Astro.props;
+const { cover, planned, mediaNote } = project.data;
+// The hero image opens the gallery.
+const gallery = [...(cover ? [{ ...cover, kind: "screen" as const }] : []), ...project.data.gallery];
+const videos = project.data.videos.slice(skipVideos);
 const hasGallery = gallery.length > 0;
-const hasVideo = videos.length > 0;
+const hasVideo = project.data.videos.length > 0;
 const plannedText = planned ?? "screenshots and a short video";
 ---
 
@@ -27,7 +31,6 @@ const plannedText = planned ?? "screenshots and a short video";
       <>
         <p class="media__status">
           <strong>Media coming soon.</strong> Planned for this page: {plannedText}.
-          Everything shown will use synthetic data.
         </p>
         <div class="sheet" aria-hidden="true">
           <MediaSlot kind="video" />
@@ -39,16 +42,16 @@ const plannedText = planned ?? "screenshots and a short video";
       </>
     ) : (
       <>
-        <p class="media__status">
-          {mediaNote ?? "All screens and video below use synthetic data."}
-        </p>
+        {mediaNote && <p class="media__status">{mediaNote}</p>}
 
         {hasVideo ? (
-          <div class="videos">
-            {videos.map((video, i) => (
-              <VideoEmbed video={video} number={i + 1} />
-            ))}
-          </div>
+          videos.length > 0 && (
+            <div class="videos">
+              {videos.map((video, i) => (
+                <VideoEmbed video={video} number={skipVideos + i + 1} />
+              ))}
+            </div>
+          )
         ) : (
           <div class="media__pending">
             <div class="media__pending-slot" aria-hidden="true">
@@ -67,9 +70,9 @@ const plannedText = planned ?? "screenshots and a short video";
                 src={item.src}
                 alt={item.alt}
                 title={item.title}
-                caption={item.caption}
+                caption={item.caption ?? ""}
                 kind={item.kind}
-                number={firstFigure + i}
+                number={i + 1}
               />
             ))}
           </div>
@@ -92,7 +95,7 @@ const plannedText = planned ?? "screenshots and a short video";
 </div>
 
 {
-  (hasGallery || project.data.cover) && (
+  hasGallery && (
     <dialog class="lightbox" aria-label="Full-size image">
       <form method="dialog" class="lightbox__bar">
         <p class="lightbox__caption" />

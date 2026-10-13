@@ -11,7 +11,10 @@ export interface WorkEntry {
   role: string;
   location: string;
   dates: string;
-  bullets: { text: string; related?: string[] }[];
+  /** One or two short lines. The resume carries the detail. */
+  lines: string[];
+  /** Project folder names, linked as case studies under the lines. */
+  related?: string[];
 }
 
 export const site = {
@@ -45,54 +48,39 @@ export const site = {
     statement:
       "I build Power BI dashboards and the Microsoft Fabric data models behind them.",
     paragraphs: [
-      "I'm a data analyst in Beirut. I work mostly in Power BI: data models, DAX measures and row-level security, for public-sector and institutional clients. I also build the tools around the reports: Power Apps, Power Automate flows and a Copilot Studio agent.",
-      "I care about numbers people can trust. That means KPIs agreed with the people who will use them, one model behind every page, access rules that show each user only their own data, and tests where the answer has to be right.",
+      "I'm a data analyst in Beirut. I work mostly in Power BI, for public-sector and institutional clients, and I build the Power Platform apps and automation around the reports.",
     ],
   },
 
+  // Fixed file name under public/. Replace the file to update the resume.
+  resume: { href: "/Mohammad-Mohammadieh-Resume.pdf", label: "Download resume" },
+
+  // The home page puts the number of projects shown in front of these.
   figures: {
-    label: "From my current role",
+    label: "In numbers",
     items: [
-      {
-        value: "60+",
-        label:
-          "Tableau dashboards converted to Power BI, in a 200+ dashboard migration program",
-      },
-      {
-        value: "4",
-        label: "companies using the sales reporting app in production",
-      },
-      {
-        value: "200+",
-        label: "automated tests verifying the AI agent demo",
-      },
+      { value: "60+", label: "Tableau dashboards converted to Power BI" },
+      { value: "4", label: "companies using the sales app in production" },
     ],
   },
 
   // `related` holds project folder names. A name with no matching published
-  // project is skipped, so a bullet never shows a broken link.
+  // project is skipped, so a job never shows a broken link.
   work: [
     {
       employer: "CCI ICT Innovations",
       role: "Data Analyst",
       location: "Beirut, Lebanon",
       dates: "Nov 2024 to Present",
-      bullets: [
-        {
-          text: "Converted and optimized 60+ Tableau dashboards to Power BI within a 200+ dashboard migration program, rebuilding data models, DAX measures and row-level security.",
-        },
-        {
-          text: "Build Power BI dashboards and Microsoft Fabric data models for public-sector and institutional clients, defining KPIs with client stakeholders.",
-          related: ["service-desk-analytics", "operations-dashboard-rls"],
-        },
-        {
-          text: "Delivered a Power Apps sales reporting app to production across four companies, with 240+ sales meeting reports logged.",
-          related: ["sales-management-app"],
-        },
-        {
-          text: "Built a Copilot Studio AI agent demo for an industrial maintenance use case, verified by 200+ automated tests.",
-          related: ["maintenance-ai-agent"],
-        },
+      lines: [
+        "Converted 60+ Tableau dashboards to Power BI in a 200+ dashboard migration program.",
+        "Build Power BI dashboards, Fabric data models, a Power Apps sales app and a Copilot Studio agent demo.",
+      ],
+      related: [
+        "service-desk-analytics",
+        "operations-dashboard-rls",
+        "sales-management-app",
+        "maintenance-ai-agent",
       ],
     },
     {
@@ -100,14 +88,8 @@ export const site = {
       role: "Information Management Engineer",
       location: "Saida, Lebanon",
       dates: "Feb 2024 to Oct 2024",
-      bullets: [
-        { text: "Configured and maintained gateways and enterprise applications." },
-        {
-          text: "Built automation enhancements and custom solutions for operational needs.",
-        },
-        {
-          text: "Extracted and transformed operational data to support business processes and decisions.",
-        },
+      lines: [
+        "Configured gateways and enterprise applications, and built automation for operational needs.",
       ],
     },
     {
@@ -115,19 +97,12 @@ export const site = {
       role: "Data Analyst",
       location: "Dubai, UAE (Remote)",
       dates: "Sept 2023 to Feb 2024",
-      bullets: [
-        {
-          text: "Wrote MySQL queries with joins, subqueries and conditional logic to extract and transform operational data.",
-        },
-        {
-          text: "Built Tableau reports and analyses used for operational decision-making.",
-        },
-      ],
+      lines: ["Wrote MySQL queries and built Tableau reports for operational decisions."],
     },
   ] as WorkEntry[],
 
   projectsIntro:
-    "These projects were built for my employer or its clients. Client names and real data are confidential, so every case study uses synthetic data.",
+    "The organization and product names in the demos are made up, and all the data is synthetic.",
 
   skills: [
     {
@@ -160,7 +135,7 @@ export const site = {
 
   // Fixed wording. Shown on every project page, above any image.
   confidentialityNote:
-    "This was built for my employer or one of its clients. Client names and real data are confidential, so everything shown here uses synthetic data.",
+    "Built for my employer or its clients. Client names and data are confidential, so everything shown here, names included, is synthetic.",
 };
 
 export const mailto = `mailto:${site.email}`;

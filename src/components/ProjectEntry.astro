@@ -76,9 +76,13 @@ const thumbWidths = cover ? [480, 640, 960, 1280].filter((w) => w <= cover.src.w
         </div>
       )
     }
-    <div>
-      <dt class="visually-hidden">Status</dt>
-      <dd class="entry__status">{STATUS_LABEL[data.status]}</dd>
-    </div>
+    {
+      data.status !== "media" && (
+        <div>
+          <dt class="visually-hidden">Status</dt>
+          <dd class="entry__status">{STATUS_LABEL[data.status]}</dd>
+        </div>
+      )
+    }
   </dl>
 </article>

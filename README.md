@@ -7,7 +7,7 @@ It is a static site built with [Astro](https://astro.build) and hand-written CSS
 
 ## What is shown, and what is not
 
-The projects were built for my employer or its clients. Client names and real data are confidential, so every screen and video on the site comes from a demo copy with synthetic data: invented organizations, invented people, generated numbers. The pages say so, and each one says exactly what its screens show.
+The projects were built for my employer or its clients. Client names and real data are confidential, so every screen and video on the site comes from a demo copy with synthetic data: invented organizations, invented people, generated numbers. Each project page says so once, near the top.
 
 ## Run it
 
@@ -67,13 +67,13 @@ Then, in the project's `index.md`:
 
 1. Add `cover` (the hero image, also the picture on the home page card), `gallery` and `videos`. The template shows the fields. Every image needs `alt` text that says what the screen shows.
 2. Put the short highlight video first and the full walkthrough second.
-3. Say plainly what the media is in `noteExtra` and `mediaNote`: demo copy, synthetic data, invented names.
+3. The fixed note already says the media is synthetic, so do not repeat it. Use `mediaNote` only for something a viewer needs to know about the recording, and `roleDetail` to say which parts were yours.
 4. Change `status` from `writeup` to `media`, then run `npm run build`.
 
 | `status` | Label on the site | Needs |
 |---|---|---|
 | `writeup` | Media coming soon | `planned` |
-| `media` | Screens and video | `cover` and at least two `gallery` images |
+| `media` | (no label) | `cover` and at least two `gallery` images |
 | `live` | Live demo | the same, plus `demo` |
 
 `demo`, `downloads` and `repoUrl` are optional. While they are empty nothing is shown for them.
@@ -105,7 +105,8 @@ The checks read text. They cannot read what is inside an image or a video, so lo
 ## Rules for content
 
 - Never name a client. The employer is named in the home page work history only.
-- Every project page shows the fixed note: the work was built for the employer or one of its clients, and everything shown uses synthetic data. `noteExtra` adds to it. It cannot replace it.
+- Every project page shows the fixed note once, above the highlight video: the work was built for the employer or its clients, and everything shown is synthetic. Do not repeat it in body text or captions. `noteExtra` adds to it when accuracy needs it. It cannot replace it.
+- Keep text short: one sentence over a paragraph, and nothing said twice. Long definitions go inside a closed `<details class="more">` block.
 - Only screenshots and video made with synthetic data. No real data, no real logos.
 - For team work, say so, and name only the parts that were mine.
 - First person, plain words, American spelling, no em dashes or en dashes.
@@ -116,6 +117,7 @@ The checks read text. They cannot read what is inside an image or a video, so lo
 ```
 site.config.mjs                 GitHub username, site address, base path
 src/data/site.ts                name, links, work, skills, education, intro, fixed note
+public/Mohammad-Mohammadieh-Resume.pdf   the file behind "Download resume"; replace it to update
 src/content/projects/<name>/    one folder per project: index.md, screenshots, video posters
 src/content.config.ts           the fields a project may have, and the status rules
 public/media/<name>/            the videos

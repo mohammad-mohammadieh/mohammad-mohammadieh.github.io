@@ -10,7 +10,7 @@ export const STATUS_LABEL = {
 
 export const ROLE_LABEL = {
   built: "Built by me",
-  contributed: "Contributed as part of a team",
+  contributed: "Contributor in a team",
 } as const;
 
 /** Published projects in home page order. Drafts never reach the build. */
