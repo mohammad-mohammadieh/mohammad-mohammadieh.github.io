@@ -46,7 +46,7 @@ export const site = {
 
   intro: {
     statement:
-      "I build Power BI dashboards and the Microsoft Fabric data models behind them.",
+      "I turn business data into clear dashboards and tools people actually use.",
     paragraphs: [
       "I'm a data analyst in Beirut. I work mostly in Power BI, for public-sector and institutional clients, and I build the Power Platform apps and automation around the reports.",
     ],
