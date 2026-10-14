@@ -107,10 +107,6 @@ export const site = {
   // Each group is shown as a row of tags.
   skills: [
     {
-      group: "Certification",
-      items: ["Microsoft Certified: Fabric Analytics Engineer Associate (DP-600), 2025"],
-    },
-    {
       group: "Business Intelligence",
       items: [
         "Power BI",
@@ -140,6 +136,16 @@ export const site = {
     },
     { group: "Languages", items: ["Fluent in English and Arabic"] },
   ],
+
+  // Microsoft's public verification page. The badge is Microsoft's own Associate badge.
+  certification: {
+    name: "Microsoft Certified: Fabric Analytics Engineer Associate",
+    exam: "DP-600",
+    issuer: "Microsoft",
+    dates: "Issued Mar 2025, valid to Mar 2028",
+    url: "https://learn.microsoft.com/en-us/users/mohammadmohammadieh-9729/credentials/c0862255dbcce286",
+    badge: "/microsoft-certified-associate-badge.svg",
+  },
 
   education: {
     school: "Rafik Hariri University",

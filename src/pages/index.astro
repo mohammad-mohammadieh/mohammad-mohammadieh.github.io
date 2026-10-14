@@ -130,7 +130,14 @@ const anyCover = projects.some((p) => p.data.cover);
     </dl>
   </Section>
 
-  <Section id="education" number="4" title="Education">
+  <Section id="education" number="4" title="Education and certification">
+    <a class="cert" href={site.certification.url} rel="noopener">
+      <img src={site.certification.badge} width="64" height="64" alt="Microsoft Certified Associate badge" />
+      <span class="cert__body">
+        <span class="cert__name">{site.certification.name} <span class="nowrap">({site.certification.exam})</span></span>
+        <span class="cert__meta">{site.certification.issuer} · {site.certification.dates} · Verify online<Icon name="arrow-up-right" /></span>
+      </span>
+    </a>
     <article class="job">
       <header class="job__head">
         <h3 class="job__org">{site.education.school}</h3>
