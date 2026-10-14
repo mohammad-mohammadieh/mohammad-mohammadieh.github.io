@@ -107,6 +107,10 @@ export const site = {
   // Each group is shown as a row of tags.
   skills: [
     {
+      group: "Certification",
+      items: ["Microsoft Certified: Fabric Analytics Engineer Associate (DP-600), 2025"],
+    },
+    {
       group: "Business Intelligence",
       items: [
         "Power BI",
